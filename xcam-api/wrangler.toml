@@ -4,21 +4,9 @@ main = "index.js"
 compatibility_date = "2024-05-01"
 workers_dev = true
 route = ""
-account_id = "962d0bd07aad1f73db41e18f45cb7470"
-
-# === Redirecionamento via Netlify com bloqueio de cabeçalhos CORS ===
-[[redirects]]
-  from = "/*"
-  to = "https://xcam-api.aserio.workers.dev/:splat"
-  status = 200
-  force = true
-  [redirects.headers]
-    Access-Control-Allow-Origin = ""
-    Access-Control-Allow-Headers = ""
-    Access-Control-Allow-Methods = ""
-    Access-Control-Allow-Credentials = ""
-    Vary = ""
+account_id = "b8e7693b1a87d22cdb090eef31e63dc5"
 
 # wrangler.toml (wrangler v3.88.0^)
 [observability.logs]
+
 enabled = true
