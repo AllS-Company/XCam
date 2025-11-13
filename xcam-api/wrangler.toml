@@ -1,5 +1,5 @@
 # === Configuração do Worker Cloudflare ===
-name = "apix"
+name = "xcam-api"
 main = "index.js"
 compatibility_date = "2024-05-01"
 workers_dev = true
@@ -10,4 +10,5 @@ account_id = "b8e7693b1a87d22cdb090eef31e63dc5"
 [observability.logs]
 
 enabled = true
+
 
