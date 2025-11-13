@@ -932,7 +932,7 @@ function openModal(broadcastId) {
   const tagsString = broadcast.tags
     ? encodeURIComponent(broadcast.tags.map((tag) => tag.name).join(","))
     : "";
-  const iframeUrl = `https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-beta/player/?user=${broadcast.username}&img=${posterUrl}&tags=${tagsString}`;
+  const iframeUrl = `https://samuelpassamani.github.io/XCam/xcam-player/?user=${broadcast.username}&img=${posterUrl}&tags=${tagsString}`;
   // Set iframe source and show it, hide the thumbnail/play button
   modalIframe.src = iframeUrl;
   document.getElementById("modal-player").classList.add("hidden");
