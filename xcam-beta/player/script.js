@@ -6,7 +6,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const username = urlParams.get('user') || 'tentationdivine';
 
 // 3. Procura pelo parâmetro 'img'. Se não encontrar, constrói a URL da imagem com base no username.
-const imageUrl = urlParams.get('img') || `https://api.xcam.gay/gif/${username}.gif`;
+const imageUrl = urlParams.get('img') || `https://snapshots.xcdnpro.com/thumbnails/${username}`;
 
 // 4. Procura pelo parâmetro 'tags' e formata a descrição.
 const tagsParam = urlParams.get('tags');
@@ -30,7 +30,7 @@ const playerInstance = jwplayer("player").setup({
   },
 
   logo: {
-    file: "https://xcam.gay/src/logoGay.svg",
+    file: "https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-beta/src/logoGay.svg",
     link: "https://www.buymeacoffee.com/"
   },
 
@@ -50,7 +50,7 @@ const playerInstance = jwplayer("player").setup({
       image: imageUrl,
       sources: [
         {
-          file: `https://api-xcam.netlify.app/stream/${username}.m3u8`,
+          file: `https://api.xcam.gay/stream/${username}.m3u8?key=99090882`,
           label: "Source",
           type: "video/x-mpegURL",
           default: true
@@ -181,18 +181,6 @@ playerInstance.off("ready", function () {
   if (spacer && timeSlider && spacer.parentNode) {
     spacer.parentNode.insertBefore(timeSlider, spacer);
   }
-
-  // Detect adblock
-  playerInstance.on("adBlock", () => {
-    const modal = document.querySelector("div.modal");
-    if (modal) {
-      modal.style.display = "flex";
-      const closeButton = document.getElementById("close");
-      if (closeButton) {
-        closeButton.addEventListener("click", () => location.reload());
-      }
-    }
-  });
 
   // Forward 10 seconds
   const rewindContainer = playerContainer.querySelector(
