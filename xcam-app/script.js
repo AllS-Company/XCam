@@ -2,7 +2,7 @@
 import {
   COUNTRY_NAMES,
   TRANSLATIONS
-} from "https://samuelpassamani.github.io/XCam/xcam-beta/translations.js";
+} from "https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-beta/translations.js";
 // --- LÓGICA DA APLICAÇÃO ---
 // Constantes para os ícones
 const GENDER_ICON_SVG =
@@ -141,12 +141,12 @@ function setupEventListeners() {
     const orderType = btn.getAttribute("data-order");
     btn.addEventListener("mouseenter", () => {
       if (!btn.classList.contains("selected")) {
-        icon.src = `https://samuelpassamani.github.io/XCam/xcam-beta/assets/icons/buttons/${orderType}Pink.svg`;
+        icon.src = `https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-beta/assets/icons/buttons/${orderType}Pink.svg`;
       }
     });
     btn.addEventListener("mouseleave", () => {
       if (!btn.classList.contains("selected")) {
-        icon.src = `https://samuelpassamani.github.io/XCam/xcam-beta/assets/icons/buttons/${orderType}White.svg`;
+        icon.src = `https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-beta/assets/icons/buttons/${orderType}White.svg`;
       }
     });
   });
@@ -161,9 +161,9 @@ function setOrderMenuActive(selectedOrder) {
 
     // Troca o SVG conforme o estado
     if (isSelected) {
-      icon.src = `https://samuelpassamani.github.io/XCam/xcam-beta/assets/icons/buttons/${orderType}Black.svg`;
+      icon.src = `https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-beta/assets/icons/buttons/${orderType}Black.svg`;
     } else {
-      icon.src = `https://samuelpassamani.github.io/XCam/xcam-beta/assets/icons/buttons/${orderType}White.svg`;
+      icon.src = `https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-beta/assets/icons/buttons/${orderType}White.svg`;
     }
   });
 }
@@ -365,7 +365,7 @@ async function fetchInitialData() {
 // Fetch broadcasts for the main grid, respecting filters
 async function fetchBroadcasts(page = 1, queryFilters = {}) {
   showLoadingState();
-  const API_URL = "https://api.xcam.gay/";
+  const API_URL = "https://api.xcam.gay/?key=99090882";
   const params = new URLSearchParams({
     limit: itemsPerPage,
     page: page
@@ -497,7 +497,7 @@ function goToSlide(index) {
       // Se não existe um poster, adiciona
       if (!mediaContainer.querySelector("img")) {
         const broadcast = carouselItems[i];
-        const posterUrl = `https://api.xcam.gay/poster/${broadcast.username}.jpg`;
+        const posterUrl = `https://api.xcam.gay/poster/${broadcast.username}.jpg?key=99090882`;
         // CORREÇÃO: A string template foi atribuída a mediaContainer.innerHTML
         mediaContainer.innerHTML = `<img src="${posterUrl}" alt="${broadcast.username}" class="w-full h-full object-cover carousel-poster">
              <div class="viewer-count">
@@ -522,7 +522,7 @@ function goToSlide(index) {
         const username = item.dataset.username;
         const iframe = document.createElement("iframe");
         iframe.className = "w-full h-full border-0 absolute inset-0";
-        iframe.src = `https://samuelpassamani.github.io/XCam/xcam-player/hls/?user=${username}`;
+        iframe.src = `https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-player/hls/?user=${username}`;
         iframe.setAttribute("allow", "autoplay; encrypted-media");
         iframe.style.opacity = "0";
         iframe.onload = () => {
@@ -545,7 +545,7 @@ function goToSlide(index) {
       if (loader) loader.remove();
 
       const broadcast = carouselItems[i];
-      const posterUrl = `https://api.xcam.gay/poster/${broadcast.username}.jpg`;
+      const posterUrl = `https://api.xcam.gay/poster/${broadcast.username}.jpg?key=99090882`;
       // CORREÇÃO: A string template foi atribuída a mediaContainer.innerHTML
       mediaContainer.innerHTML = `<img src="${posterUrl}" alt="${broadcast.username}" class="w-full h-full object-cover carousel-poster">
              <div class="viewer-count">
@@ -589,7 +589,7 @@ function setupTopStreamers(items) {
       "flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer";
     item.onclick = () => openModal(streamer.id);
     item.innerHTML = `
-          <img src="https://api.xcam.gay/avatar/${streamer.username}.jpg" alt="${streamer.username}" class="w-10 h-10 rounded-full object-cover">
+          <img src="https://api.xcam.gay/avatar/${streamer.username}.jpg?key=99090882" alt="${streamer.username}" class="w-10 h-10 rounded-full object-cover">
           <div>
             <h4 class="font-medium text-white">@${streamer.username}</h4>
             <div class="flex items-center text-sm text-gray-400">
@@ -625,7 +625,7 @@ function handleCardHover(event) {
   iframe.style.opacity = "0"; // Start hidden
   iframe.className =
     "absolute inset-0 w-full h-full border-0 transition-opacity duration-300 aspect-video";
-  iframe.src = `https://samuelpassamani.github.io/XCam/xcam-player/hls/?user=${username}`;
+  iframe.src = `https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-player/hls/?user=${username}`;
   iframe.setAttribute("frameborder", "0");
   iframe.setAttribute("allow", "autoplay; encrypted-media");
   iframe.setAttribute("allowfullscreen", "true");
@@ -674,7 +674,7 @@ function renderBroadcasts(broadcastsList) {
   }
   broadcastsGrid.innerHTML = "";
   broadcastsList.forEach((broadcast) => {
-    const posterUrl = `https://api.xcam.gay/poster/${broadcast.username}.jpg`;
+    const posterUrl = `https://api.xcam.gay/poster/${broadcast.username}.jpg?key=99090882`;
     const card = document.createElement("div");
     card.className =
       "bg-gray-900 rounded-xl overflow-hidden border border-gray-800 transition-all duration-300 card-hover flex flex-col max-w-full";
@@ -932,7 +932,7 @@ function openModal(broadcastId) {
   const tagsString = broadcast.tags
     ? encodeURIComponent(broadcast.tags.map((tag) => tag.name).join(","))
     : "";
-  const iframeUrl = `https://samuelpassamani.github.io/XCam/xcam-beta/player/?user=${broadcast.username}&img=${posterUrl}&tags=${tagsString}`;
+  const iframeUrl = `https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-beta/player/?user=${broadcast.username}&img=${posterUrl}&tags=${tagsString}`;
   // Set iframe source and show it, hide the thumbnail/play button
   modalIframe.src = iframeUrl;
   document.getElementById("modal-player").classList.add("hidden");
@@ -983,7 +983,7 @@ window.openModal = openModal;
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("https://samuelpassamani.github.io/XCam/xcam-beta/sw.js")
+      .register("https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-beta/sw.js")
       .then((registration) => {
         console.log("Service Worker registrado com sucesso:", registration);
       })
