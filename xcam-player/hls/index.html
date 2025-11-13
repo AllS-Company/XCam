@@ -4,19 +4,19 @@
     <meta name="renderer" content="webkit"/>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="icon" type="image/png" href="https://xcam.gay/assets/icons/icon-96x96.png" />
-    <link rel="shortcut icon" href="https://xcam.gay/assets/icons/icon-96x96.png" />
+    <link rel="icon" type="image/png" href="https://samuelpassamani.github.io/XCam/xcam-beta/assets/icons/icon-96x96.png" />
+    <link rel="shortcut icon" href="https://samuelpassamani.github.io/XCam/xcam-beta/assets/icons/icon-96x96.png" />
     <meta name="keywords" content="m3u8 online player,hls player,m3u8,hls,stream player" />
     <meta name="description" content="To play M3U8/HLS/MP4 streams/videos online with no installation required." />
     <title>HLS & M3U8 Online Player</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, shrink-to-fit=no" />
-    <link rel="stylesheet" href="https://player.xcam.gay/hls/css/site05.css" />
-    <script src="https://player.xcam.gay/hls/scripts/jquery-3.5.1.min.js"></script>
-    <script src="https://player.xcam.gay/hls/scripts/jquery.blockUI.min.js"></script>
-    <script src="https://player.xcam.gay/hls/scripts/toastr/toastr.min.js"></script>
-    <link href="https://player.xcam.gay/hls/scripts/toastr/toastr.css" rel="Stylesheet" />
-    <script src="https://player.xcam.gay/hls/scripts/hls.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0https://player.xcam.gay/hls/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://samuelpassamani.github.io/XCam/xcam-player/hls/css/site05.css" />
+    <script src="https://samuelpassamani.github.io/XCam/xcam-player/hls/scripts/jquery-3.5.1.min.js"></script>
+    <script src="https://samuelpassamani.github.io/XCam/xcam-player/hls/scripts/jquery.blockUI.min.js"></script>
+    <script src="https://samuelpassamani.github.io/XCam/xcam-player/hls/scripts/toastr/toastr.min.js"></script>
+    <link href="https://samuelpassamani.github.io/XCam/xcam-player/hls/scripts/toastr/toastr.css" rel="Stylesheet" />
+    <script src="https://samuelpassamani.github.io/XCam/xcam-player/hls/scripts/hls.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Raleway" />
 
     <!-- XDev: Início dos Ajustes de CSS para Ecrã Inteiro -->
@@ -80,11 +80,11 @@
             // 2. Verifica se o parâmetro 'user' foi encontrado.
             if (user) {
                 // Se sim, constrói a URL do vídeo com o valor do parâmetro.
-                videoSrc = `https://api-xcam.netlify.app/stream/${user}.m3u8`;
+                videoSrc = `https://api.xcam.gay/stream/${user}.m3u8`;
                 console.log(`Parâmetro 'user' encontrado. A carregar stream para: ${user}`);
             } else {
                 // Se não, usa uma URL padrão como fallback.
-                videoSrc = "https://api-xcam.netlify.app/stream/JacksonOlsenn.m3u8"; // URL Padrão
+                videoSrc = "https://api.xcam.gay/stream/JacksonOlsenn.m3u8"; // URL Padrão
                 console.log("Nenhum parâmetro 'user' encontrado. A carregar stream padrão.");
             }
             // XDev: Fim da lógica para URL dinâmica
