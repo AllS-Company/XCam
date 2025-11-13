@@ -1,1816 +1,994 @@
-// Variáveis globais
-let allBroadcasts = [];
-let filteredBroadcasts = [];
+// Importa as traduções do script externo
+import {
+  COUNTRY_NAMES,
+  TRANSLATIONS
+} from "https://samuelpassamani.github.io/XCam/xcam-beta/translations.js";
+// --- LÓGICA DA APLICAÇÃO ---
+// Constantes para os ícones
+const GENDER_ICON_SVG =
+  "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IS0tIFVwbG9hZGVkIHRvOiBTVkcgUmVwbywgd3d3LnN2Z3JlcG8uY29tLCBHZW5lcmF0b3I6IFNWRyBSZXBvIE1peGVyIFRvb2xzIC0tPgo8c3ZnIGZpbGw9IiNGRkZGRkYiIHdpZHRoPSI4MDBweCIgaGVpZHRoPSI4MDBweCIgdmlld0JveD0iMCAwIDI1NiAyNTYiIGlkPSJGbGF0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxwYXRoIGQ9Ik0yMTkuOTk3OCwyMy45NTU1N3EtLjAwMjE5LS41Njk4NC0uMDU3NDktMS4xMzgxOWMtLjAxOC0uMTg0MDgtLjA1MjM3LS4zNjI3OS0uMDc4NDktLjU0NDQzLS4wMjk3OS0uMjA1NTctLjA1MzcxLS40MTIxMS0uMDk0MjQtLjYxNjIxLS4wNDAyOS0uMjAzNjItLjA5NjA3LS40MDA4OC0uMTQ2NDktLjYwMDU5LS4wNDU0MS0uMTgwMTctLjA4NDg0LS4zNjA4NC0uMTM4NjctLjUzOTA2LS4wNTg4NC0uMTk0MzQtLjEzMTU5LS4zODEzNS0uMTk5NzEtLjU3MTI5LS4wNjQ0NS0uMTc5NjktLjEyMzUzLS4zNjA4NC0uMTk2NzctLjUzNzYtLjA3MzQ5LS4xNzcyNC0uMTU5NjctLjM0NjY4LS4yNDEwOS0uNTE5NTMtLjA4NTgyLS4xODIxMy0uMTY2ODctLjM2NjIxLS4yNjI1Ny0uNTQ0OTItLjA4OC0uMTY0NTUtLjE4ODI0LS4zMjAzMS0uMjgzNy0uNDgwNDctLjEwNTM0LS4xNzYyNy0uMjA1Mi0uMzU1LS4zMjAzMS0uNTI2ODUtLjExNTcyLS4xNzMzNC0uMjQ0NzUtLjMzNTQ1LS4zNjktLjUwMi0uMTEtLjE0NzQ2LS4yMTI1Mi0uMjk4MzQtLjMzMDItLjQ0MTQtLjIzNDYyLS4yODYxNC0uNDgzNC0uNTU5NTctLjc0MzE2LS44MjIyNy0uMDE3ODItLjAxODA3LS4wMzI0Ny0uMDM4MDktLjA1MDU0LS4wNTYxNS0uMDE4MzEtLjAxODU2LS4wMzg1Ny0uMDMzMi0uMDU2ODgtLjA1MTI3cS0uMzk0NDEtLjM4OTY2LS44MjIyNy0uNzQzMTdjLS4xMzk2NS0uMTE0NzQtLjI4Njg2LS4yMTQzNS0uNDMwNDItLjMyMTc3LS4xNjk5Mi0uMTI3LS4zMzYwNi0uMjU4NzktLjUxMjY5LS4zNzctLjE2ODgzLS4xMTMyOC0uMzQ0MjQtLjIxMDkzLS41MTczNC0uMzE0NDUtLjE2MzMzLS4wOTc2NS0uMzIzMjQtLjIwMDE5LS40OTE0NS0uMjktLjE3MzEtLjA5Mjc3LS4zNTEyLS4xNzA5LS41Mjc1OS0uMjU0MzktLjE3ODcxLS4wODQ0OC0uMzU0NjItLjE3MzgzLS41MzgtLjI0OTUxLS4xNjkzMi0uMDcwMzItLjM0MjI5LS4xMjY0Ny0uNTE0LS4xODg0OC0uMTk3NTEtLjA3MTI5LS4zOTMwNy0uMTQ2NDktLjU5NTM0LS4yMDgtLjE2ODgyLS4wNTA3OC0uMzQwNDUtLjA4Nzg5LS41MTA4Ni0uMTMxMzUtLjIwODc0LS4wNTMyMi0uNDE1MjktLjExMTMyLS42MjgxOC0uMTUzMzItLjE5MDU1LS4wMzc1OS0uMzgzLS4wNTk1Ny0uNTc1MDctLjA4Nzg5LS4xOTU0NC0uMDI4ODEtLjM4ODMxLS4wNjQ5NC0uNTg2NzktLjA4NDQ3LS4zMzI1Mi0uMDMyNzEtLjY2Ni0uMDQ1NDEtLjk5OTg4LS4wNTA3OEMyMDguMTE4NTMsMTIuMDA4MywyMDguMDYwMywxMiwyMDgsMTJIMTcyYTEyLDEyLDAsMCwwLDAsMjRoNy4wMjkzbC0xNS4wNTEsMTUuMDUxMjdBNzEuOTc1MjYsNzEuOTc1MjYsMCwxLDAsMTA4LDE3OC45ODFWMTkySDg4YTEyLDEyLDAsMCwwLDAsMjRoMjB2MTZhMTIsMTIsMCwwLDAsMjQsMFYyMTZoMjBhMTIsMTIsMCwwLDAsMC0yNEgxMzJWMTc4Ljk4MUE3MS45MjgsNzEuOTI4LDAsMCwwLDE4MC4yNzc4Myw2OC42OTI4N0wxOTYsNTIuOTcwN1Y2MGExMiwxMiwwLDAsMCwyNCwwVjI0QzIyMCwyMy45ODQ4NiwyMTkuOTk3OCwyMy45NzAyMSwyMTkuOTk3OCwyMy45NTU1N1pNMTIwLDE1NmE0OCw0OCwwLDEsMSw0OC00OEE0OC4wNTQ2OCw0OC4wNTQ2OCwwLDAsMSwxMjAsMTU2WiIvPgo8L3N2Zz4=";
+const BROADCAST_TYPE_ICON_SVG =
+  "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjwhLS0gVXBsb2FkZWQgdG86IFNWRyBSZXBvLCB3d3cuc3ZncmVwby5jb20sIEdlbmVyYXRvcjogU1ZHIFJlcG8gTWl4ZXIgVG9vbHMgLS0+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iX3gzMl8iIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIAoJIHdpZHRoPSI4MDBweCIgaGVpZHRoPSI4MDBweCIgdmlld0JveD0iMCAwIDUxMiA1MTIiICB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KPCFbQ0RBVEFbCgkuc3Qwe2ZpbGw6I0ZGRkZGRjt9Cl1dPgo8L3N0eWxlPgo8Zz4KCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0xMDMuMTY5LDI1Ni44MjhjNDMuNzAzLDAsNzkuMTI1LTM1LjQzOCw3OS4xMjUtNzkuMTQxYzAtNDMuNjg4LTM1LjQyMi03OS4xMjUtNzkuMTI1LTc5LjEyNQoJCVMyNC4wNDQsMTM0LDI0LjA0NCwxNzcuNjg4QzI0LjA0NCwyMjEuMzkxLDU5LjQ2NiwyNTYuODI4LDEwMy4xNjksMjU2LjgyOHoiLz4KCTxjaXJjbGUgY2xhc3M9InN0MCIgY3g9IjMwMi42MzgiIGN5PSIxNDQuNzE5IiByPSIxMDYuODI4Ii8+Cgk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMy4wMDAxMiwyODAuMjM0SDc0LjE1M3YxNzEuNDM4YzAsMTIuMzkxLDEwLjA0NywyMi40MzgsMjIuNDM4LDIyLjQzOGgyMzYuMDQ3CgkJYzEyLjM3NSwwLDIyLjQyMi0xMC4wNDcsMjIuNDIyLTIyLjQzOHYtMTQ5QzM1NS4wNiwyOTAuMjgxLDM0NS4wMTMsMjgwLjIzNCwzMzIuNjM4LDI4MC4yMzR6Ii8+Cgk8cmVjdCB4PSIzNzEuMjE2IiB5PSIzMzEuNjcyIiBjbGFzcz0ic3QwIiB3aWR0aD0iMzQuMjk3IiBoZWlnaHQ9Ijk5LjY1NiIvPgoJPHBhdGggY2xhc3M9InN0MCIgZD0iTTUwNi41OTEsMjkzLjQzOGMtMy4zNTktMi4wMzEtNy41NDctMi4xNTYtMTEuMDMxLTAuMzEzbC03My4yMzQsMzguNTQ3djk4LjU0N2w3My4yMzQsMzguNTQ3CgkJYzMuNDg0LDEuODQ0LDcuNjcyLDEuNzE5LDExLjAzMS0wLjMxM3M1LjQwNi01LjY3Miw1LjQwNi05LjYwOVYzMDMuMDQ3QzUxMS45OTcsMjk5LjEwOSw1MDkuOTUsMjk1LjQ2OSw1MDYuNTkxLDI5My40Mzh6Ii8+Cgk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMC44NTYsMjg3LjE1NmMtMS43MzQsNC4xODgtMC43ODEsOS4wMTYsMi40MzgsMTIuMjM0bDU0LjA0Nyw1NC4wNDd2LTczLjIwM0gxMS4yMTYKCQlDNi42ODUsMjgwLjIzNCwyLjU5MSwyODIuOTY5LDAuODU2LDI4Ny4xNTZ6Ii8+CjwvZz4KPC9zdmc+";
+const ORIENTATION_ICON_SVG =
+  "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHdpZHRoPSI4MDBweCIgaGVpZHRoPSI4MDBweCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNOC41NTI4NCAzLjAwMDEyQzcuOTM1OTggMy4wMDAxMiA3LjIzODQxIDMuMDY1MTQgNi41NzIwOSAzLjI5MjI0QzIuNTU0OTQgNC42MDM4NyAxLjI2MzQxIDguODk0IDIuMzk4NzcgMTIuNDNMMi40MDM1NCAxMi40NDQ4TDIuNDA4NzcgMTIuNDU5NUMzLjAzNDM1IDE0LjIxNzQgNC4wNDIyNiAxNS44MTI3IDUuMzUzMzYgMTcuMTI0OUw1LjM2MDkxIDE3LjEzMjRMNS4zNjg2MiAxNy4xMzk4QzcuMjM3ODIgMTguOTMyMyA5LjI3MjU0IDIwLjQ5NTMgMTEuNDc1NiAyMS44NTE1TDExLjk5MzQgMjIuMTcwM0wxMi41MTQ3IDIxLjg1NzNDMTQuNzIyNiAyMC41MzE1IDE2Ljc5NjQgMTguOTI1NCAxOC42NDMyIDE3LjE0NzRMMTguNjQ5IDE3LjE0MTlMMTguNjU0NyAxNy4xMzYyQzE5Ljk3NzEgMTUuODIxNSAyMC45ODUxIDE0LjIxNDQgMjEuNjAxNSAxMi40NTQ5TDIxLjYwNjYgMTIuNDQwMkwyMS42MTEzIDEyLjQyNTNDMjIuNzI1MSA4Ljg5NzAzIDIxLjQ0MDEgNC42MDE3NiAxNy40NTA3IDMuMzA5NDhDMTYuNzk3NiAzLjA5MjIxIDE2LjEyMzYgMy4wMDAxMiAxNS40NjQ4IDMuMDAwMTJDMTMuOTgyOCAzLjAwMDExIDEyLjg4NTggMy42MjA2NCAxMi4wMDA0IDQuMjUzMDlDMTEuMTIxOSAzLjYyNTQ1IDEwLjAxNzYgMy4wMDAxMiA4LjU1Mjg0IDMuMDAwMTJaIiBmaWxsPSIjRkZGRkZGIi8+PC9zdmc+";
+// Global variables
+let broadcasts = []; // Acts as a cache for modal details
 let currentPage = 1;
-let currentFilters = {
-  country: "all",
-  gender: "all",
-  orientation: "all",
-  search: ""
+let itemsPerPage = 16; // Increased for better grid view
+let totalPages = 1;
+let currentCarouselIndex = 0;
+let carouselItems = [];
+let searchTimeout;
+let filters = {
+  search: "",
+  country: "",
+  gender: "",
+  orientation: "",
+  tags: ""
 };
+let order = "mostViewers"; // Parâmetro global de ordenação
+// DOM Elements
+const mobileMenuButton = document.getElementById("mobile-menu-button");
+const mobileMenu = document.getElementById("mobile-menu");
+const searchInput = document.getElementById("search-input");
+const mobileSearchInput = document.getElementById("mobile-search-input");
+const carouselItemsContainer = document.getElementById("carousel-items");
+const carouselIndicators = document.getElementById("carousel-indicators");
+const prevSlideButton = document.getElementById("prev-slide");
+const nextSlideButton = document.getElementById("next-slide");
+const broadcastsGrid = document.getElementById("broadcasts-grid");
+const loadingState = document.getElementById("loading-state");
+const errorState = document.getElementById("error-state");
+const emptyState = document.getElementById("empty-state");
+const retryButton = document.getElementById("retry-button");
+const pagination = document.getElementById("pagination");
+const pageNumbers = document.getElementById("page-numbers");
+const firstPageButton = document.getElementById("first-page");
+const prevPageButton = document.getElementById("prev-page");
+const nextPageButton = document.getElementById("next-page");
+const lastPageButton = document.getElementById("last-page");
+const topStreamersContainer = document.getElementById("top-streamers");
+const filterCountry = document.getElementById("filter-country");
+const filterGender = document.getElementById("filter-gender");
+const filterOrientation = document.getElementById("filter-orientation");
+const applyFiltersButton = document.getElementById("apply-filters");
+const surpriseMeBtn = document.getElementById("surprise-me-btn");
+const broadcastModal = document.getElementById("broadcast-modal");
+const closeModal = document.querySelector(".close-modal");
+const modalUsername = document.getElementById("modal-username");
+const modalAvatar = document.getElementById("modal-avatar");
+const modalCountryFlag = document.getElementById("modal-country-flag");
+const modalCountryName = document.getElementById("modal-country-name");
+const modalViewers = document.getElementById("modal-viewers");
+const modalGender = document.getElementById("modal-gender");
+const modalOrientation = document.getElementById("modal-orientation");
+const modalType = document.getElementById("modal-type");
+const modalTags = document.getElementById("modal-tags");
+const modalThumbnail = document.getElementById("modal-thumbnail");
+const modalIframe = document.getElementById("modal-iframe");
+const generateBioBtn = document.getElementById("generate-bio-btn");
+const geminiBioContent = document.getElementById("gemini-bio-content");
+const playButton = document.getElementById("play-button");
+const relatedBroadcasts = document.getElementById("related-broadcasts");
+const toast = document.getElementById("toast");
+const toastMessage = document.getElementById("toast-message");
+// Initialize the application
+document.addEventListener("DOMContentLoaded", () => {
+  // --- AGE GATE MODAL LOGIC ---
+  const ageGateModal = document.getElementById("age-gate-modal");
+  const confirmBtn = document.getElementById("age-confirm-btn");
+  const denyBtn = document.getElementById("age-deny-btn");
+  const isAgeVerified = localStorage.getItem("ageVerified");
+  if (!isAgeVerified) {
+    ageGateModal.style.display = "flex";
+    document.body.style.overflow = "hidden"; // Prevent scrolling behind the modal
+  }
+  confirmBtn.addEventListener("click", () => {
+    localStorage.setItem("ageVerified", "true");
+    ageGateModal.style.display = "none";
+    document.body.style.overflow = "auto";
+  });
+  denyBtn.addEventListener("click", () => {
+    // Redirect to a neutral site
+    window.location.href = "https://www.google.com";
+  });
+  // --- END AGE GATE MODAL LOGIC ---
+  initApp();
+});
+// Initialize the application
+async function initApp() {
+  setupEventListeners();
+  populateCountryFilter();
+  // Fetch initial data for decoration (carousel, top streamers)
+  await fetchInitialData();
+  // Initialize main content based on URL parameters
+  initializeFromUrl();
+}
+// Setup event listeners
+function setupEventListeners() {
+  mobileMenuButton.addEventListener("click", toggleMobileMenu);
+  searchInput.addEventListener("input", handleSearch);
+  mobileSearchInput.addEventListener("input", handleSearch);
+  prevSlideButton.addEventListener("click", showPrevSlide);
+  nextSlideButton.addEventListener("click", showNextSlide);
+  retryButton.addEventListener("click", () => {
+    const params = new URLSearchParams(window.location.search);
+    const page = parseInt(params.get("page"), 10) || 1;
+    fetchBroadcasts(page, filters);
+  });
+  firstPageButton.addEventListener("click", () => goToPage(1));
+  prevPageButton.addEventListener("click", () => goToPage(currentPage - 1));
+  nextPageButton.addEventListener("click", () => goToPage(currentPage + 1));
+  lastPageButton.addEventListener("click", () => goToPage(totalPages));
+  applyFiltersButton.addEventListener("click", applyFilters);
+  surpriseMeBtn.addEventListener("click", handleSurpriseMe);
+  closeModal.addEventListener("click", closeModalHandler);
+  window.addEventListener("click", (e) => {
+    if (e.target === broadcastModal) closeModalHandler();
+  });
+  // Eventos para menu de ordem
+  document.querySelectorAll(".order-btn").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const selectedOrder = btn.getAttribute("data-order");
+      setOrder(selectedOrder);
+      setOrderMenuActive(selectedOrder);
+    });
+  });
 
-// Constante global para número de transmissões por página
-const itemsPerPage = 30; // Número de transmissões por página
+  // Troca para Pink no hover
+  document.querySelectorAll(".order-btn").forEach((btn) => {
+    const icon = btn.querySelector(".order-icon-img");
+    const orderType = btn.getAttribute("data-order");
+    btn.addEventListener("mouseenter", () => {
+      if (!btn.classList.contains("selected")) {
+        icon.src = `https://samuelpassamani.github.io/XCam/xcam-beta/assets/icons/buttons/${orderType}Pink.svg`;
+      }
+    });
+    btn.addEventListener("mouseleave", () => {
+      if (!btn.classList.contains("selected")) {
+        icon.src = `https://samuelpassamani.github.io/XCam/xcam-beta/assets/icons/buttons/${orderType}White.svg`;
+      }
+    });
+  });
+}
 
-// Dados de fallback para caso a API falhe
-const fallbackData = {
-  "broadcasts": {
-    "total": 30,
-    "page": 1,
-    "totalPages": 1,
-    "items": [
+function setOrderMenuActive(selectedOrder) {
+  document.querySelectorAll(".order-btn").forEach((btn) => {
+    const icon = btn.querySelector(".order-icon-img");
+    const orderType = btn.getAttribute("data-order");
+    const isSelected = orderType === selectedOrder;
+    btn.classList.toggle("selected", isSelected);
+
+    // Troca o SVG conforme o estado
+    if (isSelected) {
+      icon.src = `https://samuelpassamani.github.io/XCam/xcam-beta/assets/icons/buttons/${orderType}Black.svg`;
+    } else {
+      icon.src = `https://samuelpassamani.github.io/XCam/xcam-beta/assets/icons/buttons/${orderType}White.svg`;
+    }
+  });
+}
+// --- Gemini API Integration ---
+async function callGeminiAPI(prompt) {
+  const apiKey = "AIzaSyABqoAHX3hByzK57WuefKFLK2yl8rsGBXA"; // API key is handled by the environment
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+  const payload = {
+    contents: [
       {
-        "XCamId": 1,
-        "id": "52207793",
-        "username": "CasadoHeteroBig",
-        "country": "br",
-        "sexualOrientation": "straight",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/449ee6a0-29b1-4803-9901-6539ff4b6ce2.jpg",
-        "preview": {
-          "src": "https://stackvaults-hls.xcdnpro.com/34e5467b-2114-4aa9-9344-818e0e6bd5ac/hls/as+e9519af3-a67e-47e0-9a40-3f5d3ed8749b/index.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/CasadoHeteroBig?s=4Xo4CL/mg6j46wwGy5oD/sh6Du559hEmtyNmmTDf+zY="
-        },
-        "viewers": 297,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": [
+        parts: [
           {
-            "name": "feet",
-            "slug": "feet"
-          }
-        ]
-      },
-      {
-        "XCamId": 2,
-        "id": "53022497",
-        "username": "Michaell_twinks",
-        "country": "co",
-        "sexualOrientation": "bisexual",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/7e8a7d01-59fa-47ea-9e2a-5255f694784e.jpg",
-        "preview": {
-          "src": "https://cam4-hls.xcdnpro.com/316/cam4-origin-live/Michaell_twinks-316-4e971b94-14b0-4665-a1aa-d145f8c88f2f_aac/playlist.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/Michaell_twinks?s=19E3wrImTdRjRPIG137nqch6Du559hEmtyNmmTDf+zY="
-        },
-        "viewers": 106,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": []
-      },
-      {
-        "XCamId": 3,
-        "id": "47047801",
-        "username": "classied3",
-        "country": "es",
-        "sexualOrientation": "straight",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/1e439744-e758-4621-a223-21cf84956ea8.jpg",
-        "preview": {
-          "src": "https://cam4-hls.xcdnpro.com/319/cam4-origin-live/classied3-319-b4d2de89-4739-407e-9fde-036bcf013010_aac/playlist.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/classied3?s=M8NZ1TIGcmB/bdmbnJNKZo6zq8ME4vB7Rf8LdM2z2Ng="
-        },
-        "viewers": 98,
-        "broadcastType": "male_group",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "milk",
-            "slug": "milk"
-          },
-          {
-            "name": "orgy",
-            "slug": "orgy"
-          },
-          {
-            "name": "blowjob",
-            "slug": "blowjob"
-          },
-          {
-            "name": "ass",
-            "slug": "ass"
-          },
-          {
-            "name": "pornstar",
-            "slug": "pornstar"
-          },
-          {
-            "name": "anal",
-            "slug": "anal"
-          },
-          {
-            "name": "amateur",
-            "slug": "amateur"
-          }
-        ]
-      },
-      {
-        "XCamId": 4,
-        "id": "54033365",
-        "username": "men_ofunlimited",
-        "country": "us",
-        "sexualOrientation": "unknown",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/814d001c-1d8b-4219-bd9b-15d4c45ec173.jpg",
-        "preview": {
-          "src": "https://stackvaults-hls.xcdnpro.com/7829bc62-f0f9-4933-a013-c20d13e8a84d/hls/as+94ccfc21-fd4a-4188-ae15-f439d05882b5/index.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/men_ofunlimited?s=ZeIjGDUo1YVeXGMr9G6eJsh6Du559hEmtyNmmTDf+zY="
-        },
-        "viewers": 88,
-        "broadcastType": "male_group",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "cum",
-            "slug": "cum"
-          },
-          {
-            "name": "spanking",
-            "slug": "spanking"
-          },
-          {
-            "name": "blowjob",
-            "slug": "blowjob"
-          },
-          {
-            "name": "schoolgirl",
-            "slug": "schoolgirl"
-          },
-          {
-            "name": "pee",
-            "slug": "pee"
-          },
-          {
-            "name": "bdsm",
-            "slug": "bdsm"
-          },
-          {
-            "name": "threesome",
-            "slug": "threesome"
-          }
-        ]
-      },
-      {
-        "XCamId": 5,
-        "id": "50109890",
-        "username": "thiagostd2",
-        "country": "br",
-        "sexualOrientation": "straight",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/2d4f206f-90a8-44c4-87bc-bd6caaf8c4af.jpg",
-        "preview": {
-          "src": "https://cam4-hls.xcdnpro.com/316/cam4-origin-live/thiagostd2-316-6ba6a62a-bddb-4bd2-8944-dc10d3d129ac_aac/playlist.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/thiagostd2?s=5uU72GPVp8zJCC74JzAB8lwOeWSc4MGEDqYDX9LDUzE="
-        },
-        "viewers": 82,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": []
-      },
-      {
-        "XCamId": 6,
-        "id": "50224460",
-        "username": "gerson229",
-        "country": "br",
-        "sexualOrientation": "bisexual",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/1fe884ed-1a6a-4afb-bd03-34f7c4830c33.jpg",
-        "preview": {
-          "src": "https://stackvaults-hls.xcdnpro.com/70819dfb-54c8-4e36-9a9b-422dc1fd087d/hls/as+e319e042-0617-472c-ba76-02435a7b4d1f/index.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/gerson229?s=O8gKdOJ6XQeH9AxkpBncy46zq8ME4vB7Rf8LdM2z2Ng="
-        },
-        "viewers": 77,
-        "broadcastType": "male_group",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "AssToMouth",
-            "slug": "asstomouth"
-          },
-          {
-            "name": "smoke",
-            "slug": "smoke"
-          },
-          {
-            "name": "spanking",
-            "slug": "spanking"
-          },
-          {
-            "name": "milk",
-            "slug": "milk"
-          },
-          {
-            "name": "cum",
-            "slug": "cum"
-          },
-          {
-            "name": "armpits",
-            "slug": "armpits"
-          },
-          {
-            "name": "amateur",
-            "slug": "amateur"
-          }
-        ]
-      },
-      {
-        "XCamId": 7,
-        "id": "52505692",
-        "username": "bigcock_couple",
-        "country": "es",
-        "sexualOrientation": "straight",
-        "profileImageURL": "",
-        "preview": {
-          "src": "https://stackvaults-hls.xcdnpro.com/99afdbb1-f91b-43e7-8313-63f93ba02266/hls/as+85fdfba9-d625-465d-8c6a-e252d74608b1/index.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/bigcock_couple?s=1iPXOMy0tIeibA9P4g2q2fd1BYfxLGWjTwohTefNQmE="
-        },
-        "viewers": 58,
-        "broadcastType": "male_female_group",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "anal",
-            "slug": "anal"
-          },
-          {
-            "name": "squirt",
-            "slug": "squirt"
-          },
-          {
-            "name": "amateur",
-            "slug": "amateur"
-          },
-          {
-            "name": "pee",
-            "slug": "pee"
-          },
-          {
-            "name": "cum",
-            "slug": "cum"
-          },
-          {
-            "name": "blowjob",
-            "slug": "blowjob"
-          },
-          {
-            "name": "pussy",
-            "slug": "pussy"
-          }
-        ]
-      },
-      {
-        "XCamId": 8,
-        "id": "38329531",
-        "username": "Black470",
-        "country": "br",
-        "sexualOrientation": "straight",
-        "profileImageURL": "",
-        "preview": {
-          "src": "https://cam4-hls.xcdnpro.com/317/cam4-origin-live/Black470-317-6965c35c-500e-42bb-b0f6-63bf170aa084_aac/playlist.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/Black470?s=Y3+0DrVNprV5tWYkKF3I/D4E6reEu9Frqq0TOUgCLCs="
-        },
-        "viewers": 53,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "cum",
-            "slug": "cum"
-          },
-          {
-            "name": "swinging",
-            "slug": "swinging"
-          },
-          {
-            "name": "amateur",
-            "slug": "amateur"
-          }
-        ]
-      },
-      {
-        "XCamId": 9,
-        "id": "50572066",
-        "username": "022jota",
-        "country": "br",
-        "sexualOrientation": "straight",
-        "profileImageURL": "",
-        "preview": {
-          "src": "https://stackvaults-hls.xcdnpro.com/4abd3a0f-eebd-4279-94af-3f99f0b24b54/hls/as+ad2aae80-bcee-4d54-bc89-60b07011a426/index.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/022jota?s=F/WAIY1gaFzpfIB4LkpbR92H8re2i0fFr3xZ1zHW4wI="
-        },
-        "viewers": 51,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": []
-      },
-      {
-        "XCamId": 10,
-        "id": "50212404",
-        "username": "baby95i",
-        "country": "br",
-        "sexualOrientation": "gay",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/81d5f94e-3651-4700-baf1-e8e5083e7c00.jpg",
-        "preview": {
-          "src": "https://cam4-hls.xcdnpro.com/316/cam4-origin-live/baby95i-316-ccb44654-1ec1-4ed6-8bc0-4a0529d699b4_aac/playlist.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/baby95i?s=dp2fhBBml9VNB33eOubf092H8re2i0fFr3xZ1zHW4wI="
-        },
-        "viewers": 49,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "amateur",
-            "slug": "amateur"
-          },
-          {
-            "name": "feet",
-            "slug": "feet"
-          },
-          {
-            "name": "cum",
-            "slug": "cum"
-          }
-        ]
-      },
-      {
-        "XCamId": 11,
-        "id": "65521",
-        "username": "nicholis",
-        "country": "us",
-        "sexualOrientation": "bicurious",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/d9ebb9cb-8bf2-4973-a2f4-0cc9439dedf4.jpg",
-        "preview": {
-          "src": "https://stackvaults-hls.xcdnpro.com/8705f973-9fa2-4226-aadd-bc9237dbf190/hls/as+54a2719d-5a1a-4c56-8671-c8d4197fede6/index.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/nicholis?s=yPPGSraAmsY/RBM9SSYwzT4E6reEu9Frqq0TOUgCLCs="
-        },
-        "viewers": 48,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "bear",
-            "slug": "bear"
-          },
-          {
-            "name": "pee",
-            "slug": "pee"
-          },
-          {
-            "name": "cum",
-            "slug": "cum"
-          },
-          {
-            "name": "uncut",
-            "slug": "uncut"
-          },
-          {
-            "name": "hairy",
-            "slug": "hairy"
-          }
-        ]
-      },
-      {
-        "XCamId": 12,
-        "id": "51529061",
-        "username": "Ch33000",
-        "country": "fr",
-        "sexualOrientation": "straight",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/9bf60f0d-3981-4427-acd4-986466a8c164.jpg",
-        "preview": {
-          "src": "https://stackvaults-hls.xcdnpro.com/e61466cc-ae3b-4678-9579-7935aa5491af/hls/as+7dbec477-a3dd-4f0a-8e09-4ab5e540de10/index.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/Ch33000?s=1a+AaSe7ZCOBZZ4z+zf5nt2H8re2i0fFr3xZ1zHW4wI="
-        },
-        "viewers": 48,
-        "broadcastType": "male_female_group",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "analtoys",
-            "slug": "analtoys"
-          },
-          {
-            "name": "masturbation",
-            "slug": "masturbation"
-          },
-          {
-            "name": "orgy",
-            "slug": "orgy"
-          },
-          {
-            "name": "deepthroat",
-            "slug": "deepthroat"
-          },
-          {
-            "name": "pussy",
-            "slug": "pussy"
-          },
-          {
-            "name": "cum",
-            "slug": "cum"
-          },
-          {
-            "name": "C2C",
-            "slug": "c2c"
-          }
-        ]
-      },
-      {
-        "XCamId": 13,
-        "id": "27636719",
-        "username": "Frenzis61",
-        "country": "it",
-        "sexualOrientation": "straight",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/c9b9b3cc-02fe-4fae-8aab-f516aed9efce.jpg",
-        "preview": null,
-        "viewers": 45,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": []
-      },
-      {
-        "XCamId": 14,
-        "id": "43952255",
-        "username": "tiresias525",
-        "country": "de",
-        "sexualOrientation": "unknown",
-        "profileImageURL": "",
-        "preview": {
-          "src": "https://cam4-hls.xcdnpro.com/317/cam4-origin-live/tiresias525-317-23a38140-6094-4a1c-88ae-10b1bbc35455_aac/playlist.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/tiresias525?s=DjgJi1Ksq8bdm93LlkJpzkAoisdUk3JuL/yVkSRqld4="
-        },
-        "viewers": 45,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": []
-      },
-      {
-        "XCamId": 15,
-        "id": "47606841",
-        "username": "lucsexx",
-        "country": "br",
-        "sexualOrientation": "bisexual",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/480e3674-3a96-4e7c-aec2-7d4527ba5702.jpg",
-        "preview": {
-          "src": "https://cam4-hls.xcdnpro.com/322/cam4-origin-live/lucsexx-322-cd9c53d6-7f4c-4090-8db0-120ff19cc6af_aac/playlist.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/lucsexx?s=77jUfl0K6FMP+sE9PPwY2N2H8re2i0fFr3xZ1zHW4wI="
-        },
-        "viewers": 43,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": []
-      },
-      {
-        "XCamId": 16,
-        "id": "40764850",
-        "username": "acher1",
-        "country": "tw",
-        "sexualOrientation": "bicurious",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/83f75135-02ff-434d-89e4-353e42180c6f.jpg",
-        "preview": {
-          "src": "https://cam4-hls.xcdnpro.com/314/cam4-origin-live/acher1-314-bec38922-6cde-4354-9897-dfb8a8c29218_aac/playlist.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/acher1?s=yIvt+oUzWXZTnJSNMtBaP32rI3iX4xwfjr/zklWunMA="
-        },
-        "viewers": 40,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": []
-      },
-      {
-        "XCamId": 17,
-        "id": "53624525",
-        "username": "EDuardoBranco",
-        "country": "br",
-        "sexualOrientation": "unknown",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/8bfb3869-4432-4fdc-8674-6ab374d68eff.jpg",
-        "preview": {
-          "src": "https://stackvaults-hls.xcdnpro.com/e4b2de27-e381-480a-b97a-8ba8b46304bd/hls/as+ee0bb955-1e9c-4dfa-a2d4-6e435e9eaf58/index.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/EDuardoBranco?s=ks/VDiZss3lfqTbhJZ/D55OoxccD7bMmOXpRw5TEUIU="
-        },
-        "viewers": 37,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": []
-      },
-      {
-        "XCamId": 18,
-        "id": "54078277",
-        "username": "NoaBlaze",
-        "country": "br",
-        "sexualOrientation": "straight",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/06874b63-e7b9-4120-8e9c-ba774b09bfad.jpg",
-        "preview": {
-          "src": "https://stackvaults-hls.xcdnpro.com/202e154a-21db-487b-8a19-a273706d90ff/hls/as+7cb83181-f6b3-43ec-8d2b-2bb733b6266d/index.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/NoaBlaze?s=fvlva1QZLUG9p22ekYpFlz4E6reEu9Frqq0TOUgCLCs="
-        },
-        "viewers": 36,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "new",
-            "slug": "new"
-          },
-          {
-            "name": "cum",
-            "slug": "cum"
-          },
-          {
-            "name": "Fit",
-            "slug": "fit"
-          },
-          {
-            "name": "masturbation",
-            "slug": "masturbation"
-          },
-          {
-            "name": "amateur",
-            "slug": "amateur"
-          }
-        ]
-      },
-      {
-        "XCamId": 19,
-        "id": "51107868",
-        "username": "xxxironggxxx",
-        "country": "fr",
-        "sexualOrientation": "bisexual",
-        "profileImageURL": "",
-        "preview": {
-          "src": "https://stackvaults-hls.xcdnpro.com/16ab9411-288d-4f11-ac93-ab2ef0e344b5/hls/as+7e16df0d-f331-4fac-993c-948ef5ed5c9c/index.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/xxxironggxxx?s=iLn9wHOPCt4IwsTi1ajWyg5U0s4LAeyrk2IpHtpsMe8="
-        },
-        "viewers": 36,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "ass",
-            "slug": "ass"
-          },
-          {
-            "name": "gamer",
-            "slug": "gamer"
-          },
-          {
-            "name": "C2C",
-            "slug": "c2c"
-          },
-          {
-            "name": "masturbation",
-            "slug": "masturbation"
-          },
-          {
-            "name": "swinging",
-            "slug": "swinging"
-          },
-          {
-            "name": "cum",
-            "slug": "cum"
-          },
-          {
-            "name": "anal",
-            "slug": "anal"
-          }
-        ]
-      },
-      {
-        "XCamId": 20,
-        "id": "49426046",
-        "username": "Bear_97x",
-        "country": "co",
-        "sexualOrientation": "bisexual",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/70fd92e9-f5ed-4c29-b614-4e6f6413452f.jpg",
-        "preview": {
-          "src": "https://cam4-hls.xcdnpro.com/320/cam4-origin-live/Bear_97x-320-1174a3d6-c86a-4bb5-8185-1d682022e49c_aac/playlist.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/Bear_97x?s=/0S8NHhH5KDkgsatpC0oXD4E6reEu9Frqq0TOUgCLCs="
-        },
-        "viewers": 36,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "milk",
-            "slug": "milk"
-          },
-          {
-            "name": "cum",
-            "slug": "cum"
-          },
-          {
-            "name": "masturbation",
-            "slug": "masturbation"
-          },
-          {
-            "name": "armpits",
-            "slug": "armpits"
-          },
-          {
-            "name": "feet",
-            "slug": "feet"
-          },
-          {
-            "name": "ass",
-            "slug": "ass"
-          },
-          {
-            "name": "big",
-            "slug": "big"
-          }
-        ]
-      },
-      {
-        "XCamId": 21,
-        "id": "28495718",
-        "username": "joel715",
-        "country": "br",
-        "sexualOrientation": "straight",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/abb591ac-cd7e-4b80-8318-d702b64801b4.jpg",
-        "preview": {
-          "src": "https://stackvaults-hls.xcdnpro.com/640900ac-20f0-498b-890b-3b432cb3a3b0/hls/as+5b9b2984-7d18-4d00-bff2-53589daf9d0a/index.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/joel715?s=tOTaSm1O/EMbF6OTtNKY8t2H8re2i0fFr3xZ1zHW4wI="
-        },
-        "viewers": 35,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": []
-      },
-      {
-        "XCamId": 22,
-        "id": "53578010",
-        "username": "VeiledEros",
-        "country": "us",
-        "sexualOrientation": "straight",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/d99b818e-2b40-4253-a488-ddc3f1813e1a.jpg",
-        "preview": {
-          "src": "https://cam4-hls.xcdnpro.com/317/cam4-origin-live/VeiledEros-317-e2d0bccb-a595-493d-9d71-feb0fa391fe8_aac/playlist.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/VeiledEros?s=FwzbQUkqAVRRqIw06vmsgVwOeWSc4MGEDqYDX9LDUzE="
-        },
-        "viewers": 32,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "masturbation",
-            "slug": "masturbation"
-          },
-          {
-            "name": "bigcock",
-            "slug": "bigcock"
-          },
-          {
-            "name": "monstercock",
-            "slug": "monstercock"
-          },
-          {
-            "name": "cum",
-            "slug": "cum"
-          },
-          {
-            "name": "athletic",
-            "slug": "athletic"
-          },
-          {
-            "name": "jackoff",
-            "slug": "jackoff"
-          },
-          {
-            "name": "fantasy",
-            "slug": "fantasy"
-          }
-        ]
-      },
-      {
-        "XCamId": 23,
-        "id": "50492916",
-        "username": "lechero226",
-        "country": "tr",
-        "sexualOrientation": "straight",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/707cc3a7-62ac-40a5-ba22-5c6dd365c37e.jpg",
-        "preview": {
-          "src": "https://cam4-hls.xcdnpro.com/296/cam4-origin-live/lechero226-296-b8faa17e-4321-4219-ab30-51131a1529e3_aac/playlist.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/lechero226?s=j17wWCVmI8WOxk1ST9LcrlwOeWSc4MGEDqYDX9LDUzE="
-        },
-        "viewers": 31,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "amateur",
-            "slug": "amateur"
-          },
-          {
-            "name": "bdsm",
-            "slug": "bdsm"
-          },
-          {
-            "name": "milk",
-            "slug": "milk"
-          },
-          {
-            "name": "masturbation",
-            "slug": "masturbation"
-          },
-          {
-            "name": "cum",
-            "slug": "cum"
-          },
-          {
-            "name": "cute",
-            "slug": "cute"
-          },
-          {
-            "name": "lesbian",
-            "slug": "lesbian"
-          }
-        ]
-      },
-      {
-        "XCamId": 24,
-        "id": "43893549",
-        "username": "locuraplatense",
-        "country": "ar",
-        "sexualOrientation": "bisexual",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/3dc89b5e-bd64-44c5-8b6f-181daa8348d9.jpg",
-        "preview": {
-          "src": "https://stackvaults-hls.xcdnpro.com/7f3fa49d-0ee8-4c22-8c49-27bd08b519f1/hls/as+f31dac33-3374-4efd-a5a7-5b9b3a27f3e6/index.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/locuraplatense?s=NbV12vMC78VSzNY+nNqWbfd1BYfxLGWjTwohTefNQmE="
-        },
-        "viewers": 31,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": []
-      },
-      {
-        "XCamId": 25,
-        "id": "50580007",
-        "username": "Jhonny_Blake_",
-        "country": "us",
-        "sexualOrientation": "bisexual",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/8abda42f-df16-4429-97b5-ad9eb05bd00f.jpg",
-        "preview": {
-          "src": "https://cam4-hls.xcdnpro.com/320/cam4-origin-live/Jhonny_Blake_-320-f086f503-afb0-4e34-b6b5-b893d75e6623_aac/playlist.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/Jhonny_Blake_?s=8IGrQK0j8PkTqzm7eobR3JOoxccD7bMmOXpRw5TEUIU="
-        },
-        "viewers": 30,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "pee",
-            "slug": "pee"
-          },
-          {
-            "name": "anal",
-            "slug": "anal"
-          },
-          {
-            "name": "bigass",
-            "slug": "bigass"
-          },
-          {
-            "name": "schoolgirl",
-            "slug": "schoolgirl"
-          },
-          {
-            "name": "C2C",
-            "slug": "c2c"
-          },
-          {
-            "name": "ass",
-            "slug": "ass"
-          }
-        ]
-      },
-      {
-        "XCamId": 26,
-        "id": "54061307",
-        "username": "elimb",
-        "country": "ar",
-        "sexualOrientation": "gay",
-        "profileImageURL": "",
-        "preview": {
-          "src": "https://cam4-hls.xcdnpro.com/317/cam4-origin-live/elimb-317-99ec8c62-552f-41ef-8cf5-1da39a394f12_aac/playlist.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/elimb?s=4/MVN66RyGmOUgXrrL2HDW6tA+veV5/dEGW19YLOi/A="
-        },
-        "viewers": 30,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "feet",
-            "slug": "feet"
-          },
-          {
-            "name": "amateur",
-            "slug": "amateur"
-          }
-        ]
-      },
-      {
-        "XCamId": 27,
-        "id": "53706639",
-        "username": "Sexymaromba33",
-        "country": "br",
-        "sexualOrientation": "straight",
-        "profileImageURL": "",
-        "preview": {
-          "src": "https://cam4-hls.xcdnpro.com/321/cam4-origin-live/Sexymaromba33-321-8a8264b3-aed6-4fff-a169-9c1eadd22e0b_aac/playlist.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/Sexymaromba33?s=7d+YMwqh2cvieCaWUTPVL5OoxccD7bMmOXpRw5TEUIU="
-        },
-        "viewers": 30,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": []
-      },
-      {
-        "XCamId": 28,
-        "id": "51399558",
-        "username": "Beardedveteran",
-        "country": "us",
-        "sexualOrientation": "bisexual",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/95aa3d6b-6a3c-42ff-829a-f4d8bd29c7dd.jpg",
-        "preview": {
-          "src": "https://stackvaults-hls.xcdnpro.com/31e8cb12-8567-4516-b756-4de957329c83/hls/as+76063c7b-c5c1-4bf2-ab59-41e5eb502597/index.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/Beardedveteran?s=+UBn32g6oBq/Ap23NJn5j/d1BYfxLGWjTwohTefNQmE="
-        },
-        "viewers": 27,
-        "broadcastType": "male_group",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "bdsm",
-            "slug": "bdsm"
-          },
-          {
-            "name": "spanking",
-            "slug": "spanking"
-          },
-          {
-            "name": "ass",
-            "slug": "ass"
-          },
-          {
-            "name": "blowjob",
-            "slug": "blowjob"
-          },
-          {
-            "name": "pee",
-            "slug": "pee"
-          },
-          {
-            "name": "C2C",
-            "slug": "c2c"
-          }
-        ]
-      },
-      {
-        "XCamId": 29,
-        "id": "49045417",
-        "username": "zedizded77",
-        "country": "us",
-        "sexualOrientation": "bisexual",
-        "profileImageURL": "",
-        "preview": {
-          "src": "https://cam4-hls.xcdnpro.com/321/cam4-origin-live/zedizded77-321-e40ac8f6-6819-4ce2-a976-b5a6841011f0_aac/playlist.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/zedizded77?s=IJ5Tu3CPJbB3v1mnk00ftFwOeWSc4MGEDqYDX9LDUzE="
-        },
-        "viewers": 26,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "spanking",
-            "slug": "spanking"
-          },
-          {
-            "name": "amateur",
-            "slug": "amateur"
-          },
-          {
-            "name": "ass",
-            "slug": "ass"
-          },
-          {
-            "name": "smoke",
-            "slug": "smoke"
-          },
-          {
-            "name": "analtoys",
-            "slug": "analtoys"
-          },
-          {
-            "name": "armpits",
-            "slug": "armpits"
-          },
-          {
-            "name": "cum",
-            "slug": "cum"
-          }
-        ]
-      },
-      {
-        "XCamId": 30,
-        "id": "44366581",
-        "username": "Davidpervert",
-        "country": "co",
-        "sexualOrientation": "bisexual",
-        "profileImageURL": "https://cam4-images.xcdnpro.com/crop/400x300/614433a7-c1e8-4cce-b9fa-4f1505a3f3a5.jpg",
-        "preview": {
-          "src": "https://cam4-hls.xcdnpro.com/322/cam4-origin-live/Davidpervert-322-a9536289-b05a-4b82-9f30-54fdf4d7750d_aac/playlist.m3u8",
-          "poster": "https://snapshots.xcdnpro.com/thumbnails/Davidpervert?s=Ua6amfZtO1/8hw0nlJybRA5U0s4LAeyrk2IpHtpsMe8="
-        },
-        "viewers": 26,
-        "broadcastType": "male",
-        "gender": "male",
-        "tags": [
-          {
-            "name": "cute",
-            "slug": "cute"
-          },
-          {
-            "name": "cum",
-            "slug": "cum"
-          },
-          {
-            "name": "pee",
-            "slug": "pee"
-          },
-          {
-            "name": "smoke",
-            "slug": "smoke"
-          },
-          {
-            "name": "C2C",
-            "slug": "c2c"
-          },
-          {
-            "name": "masturbation",
-            "slug": "masturbation"
+            text: prompt
           }
         ]
       }
     ]
-  }
-};
-// Mapeamento de países em ordem alfabética
-const countryNames = {
-  af: "Afeganistão",
-  al: "Albânia",
-  dz: "Argélia",
-  as: "Samoa Americana",
-  ad: "Andorra",
-  ao: "Angola",
-  ag: "Antígua e Barbuda",
-  ar: "Argentina",
-  am: "Armênia",
-  au: "Austrália",
-  at: "Áustria",
-  az: "Azerbaijão",
-  bs: "Bahamas",
-  bh: "Bahrein",
-  bd: "Bangladesh",
-  bb: "Barbados",
-  by: "Belarus",
-  be: "Bélgica",
-  bz: "Belize",
-  bj: "Benin",
-  bm: "Bermudas",
-  bt: "Butão",
-  bo: "Bolívia",
-  ba: "Bósnia e Herzegovina",
-  bw: "Botsuana",
-  br: "Brasil",
-  bn: "Brunei",
-  bg: "Bulgária",
-  bf: "Burquina Faso",
-  bi: "Burundi",
-  cv: "Cabo Verde",
-  kh: "Camboja",
-  cm: "Camarões",
-  ca: "Canadá",
-  cf: "República Centro-Africana",
-  td: "Chade",
-  cl: "Chile",
-  cn: "China",
-  co: "Colômbia",
-  km: "Comores",
-  cg: "Congo",
-  cd: "República Democrática do Congo",
-  cr: "Costa Rica",
-  ci: "Costa do Marfim",
-  hr: "Croácia",
-  cu: "Cuba",
-  cy: "Chipre",
-  cz: "República Tcheca",
-  cw: "Curaçao",
-  dk: "Dinamarca",
-  dj: "Djibuti",
-  dm: "Dominica",
-  do: "República Dominicana",
-  ec: "Equador",
-  eg: "Egito",
-  sv: "El Salvador",
-  gq: "Guiné Equatorial",
-  er: "Eritreia",
-  ee: "Estônia",
-  sz: "Essuatíni",
-  et: "Etiópia",
-  fj: "Fiji",
-  fi: "Finlândia",
-  fr: "França",
-  ga: "Gabão",
-  gm: "Gâmbia",
-  ge: "Geórgia",
-  de: "Alemanha",
-  gh: "Gana",
-  gb: "Reino Unido",
-  en: "Inglaterra",
-  sc: "Escócia",
-  wa: "País de Gales",
-  ni: "Irlanda do Norte",
-  gr: "Grécia",
-  gd: "Granada",
-  gt: "Guatemala",
-  gn: "Guiné",
-  gw: "Guiné-Bissau",
-  gy: "Guiana",
-  ht: "Haiti",
-  hk: "Hong Kong",
-  hn: "Honduras",
-  hu: "Hungria",
-  is: "Islândia",
-  in: "Índia",
-  id: "Indonésia",
-  ir: "Irã",
-  iq: "Iraque",
-  ie: "Irlanda",
-  il: "Israel",
-  it: "Itália",
-  jm: "Jamaica",
-  jp: "Japão",
-  jo: "Jordânia",
-  kz: "Cazaquistão",
-  ke: "Quênia",
-  ki: "Kiribati",
-  kp: "Coreia do Norte",
-  kr: "Coreia do Sul",
-  kw: "Kuwait",
-  kg: "Quirguistão",
-  la: "Laos",
-  lv: "Letônia",
-  lb: "Líbano",
-  ls: "Lesoto",
-  lr: "Libéria",
-  ly: "Líbia",
-  li: "Liechtenstein",
-  lt: "Lituânia",
-  lu: "Luxemburgo",
-  mg: "Madagascar",
-  mw: "Malawi",
-  my: "Malásia",
-  mv: "Maldivas",
-  ml: "Mali",
-  mt: "Malta",
-  mh: "Ilhas Marshall",
-  mr: "Mauritânia",
-  mu: "Maurício",
-  mx: "México",
-  fm: "Micronésia",
-  md: "Moldávia",
-  mc: "Mônaco",
-  mn: "Mongólia",
-  me: "Montenegro",
-  ma: "Marrocos",
-  mz: "Moçambique",
-  mm: "Mianmar",
-  mk: "Macedônia do Norte",
-  mq: "Pan-Africanismo",
-  na: "Namíbia",
-  nr: "Nauru",
-  np: "Nepal",
-  nl: "Holanda",
-  nz: "Nova Zelândia",
-  ni: "Nicarágua",
-  ne: "Níger",
-  ng: "Nigéria",
-  no: "Noruega",
-  sj: "Noruega",
-  om: "Omã",
-  pk: "Paquistão",
-  pw: "Palau",
-  pa: "Panamá",
-  pg: "Papua-Nova Guiné",
-  py: "Paraguai",
-  pe: "Peru",
-  ph: "Filipinas",
-  pl: "Polônia",
-  pt: "Portugal",
-  pr: "Porto Rico",
-  qa: "Catar",
-  ro: "Romênia",
-  ru: "Rússia",
-  rw: "Ruanda",
-  ws: "Samoa",
-  sm: "San Marino",
-  st: "São Tomé e Príncipe",
-  sa: "Arábia Saudita",
-  sn: "Senegal",
-  rs: "Sérvia",
-  sc: "Seicheles",
-  sl: "Serra Leoa",
-  sg: "Singapura",
-  sk: "Eslováquia",
-  si: "Eslovênia",
-  sb: "Ilhas Salomão",
-  so: "Somália",
-  za: "África do Sul",
-  es: "Espanha",
-  lk: "Sri Lanka",
-  sd: "Sudão",
-  sr: "Suriname",
-  se: "Suécia",
-  ch: "Suíça",
-  sy: "Síria",
-  tw: "Taiwan",
-  tj: "Tajiquistão",
-  tz: "Tanzânia",
-  th: "Tailândia",
-  tg: "Togo",
-  to: "Tonga",
-  tt: "Trinidad e Tobago",
-  tn: "Tunísia",
-  tr: "Turquia",
-  tm: "Turcomenistão",
-  tv: "Tuvalu",
-  ug: "Uganda",
-  ua: "Ucrânia",
-  ae: "Emirados Árabes Unidos",
-  us: "Estados Unidos",
-  uy: "Uruguai",
-  uz: "Uzbequistão",
-  vu: "Vanuatu",
-  va: "Vaticano",
-  ve: "Venezuela",
-  vn: "Vietnã",
-  ye: "Iêmen",
-  zm: "Zâmbia",
-  zw: "Zimbábue"
-};
-// Traduções de gênero e orientação
-const genderTranslations = {
-  male: "Masculino",
-  female: "Feminino",
-  trans: "Trans"
-};
-const orientationTranslations = {
-  straight: "Hetero",
-  gay: "Gay",
-  lesbian: "Lésbica",
-  bisexual: "Bissexual",
-  bicurious: "Bicurioso",
-  unknown: "Não Definido"
-};
-// Função para carregar dados da API
-async function fetchBroadcasts() {
+  };
   try {
-    const response = await fetch("https://api.xcam.gay/?limit=1500");
-    if (!response.ok) throw new Error("Falha na requisição");
-    const data = await response.json();
-    return data;
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) {
+      const errorBody = await response.json();
+      console.error("Gemini API Error:", errorBody);
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+    const result = await response.json();
+    if (
+      result.candidates &&
+      result.candidates.length > 0 &&
+      result.candidates[0].content &&
+      result.candidates[0].content.parts &&
+      result.candidates[0].content.parts.length > 0
+    ) {
+      return result.candidates[0].content.parts[0].text;
+    } else {
+      console.error("Unexpected API response structure:", result);
+      return null;
+    }
   } catch (error) {
-    console.error("Erro ao carregar dados:", error);
-    showToast("Erro ao carregar transmissões. Usando dados locais.", "error");
-    return fallbackData;
+    console.error("Error calling Gemini API:", error);
+    return null;
   }
 }
-// Função para filtrar transmissões
-function filterBroadcasts(broadcasts, filters) {
-  return broadcasts.filter((broadcast) => {
-    // Filtro por país
-    if (
-      filters.country &&
-      filters.country !== "all" &&
-      broadcast.country !== filters.country
-    ) {
-      return false;
+async function handleSurpriseMe() {
+  showToast("✨ A IAXCam está buscando uma sugestão para você...");
+  const prompt = `Sugira um tema criativo para encontrar streamers na plataforma XCam. Responda APENAS com um objeto JSON com as chaves "country", "gender", "orientation", e "search". Use os seguintes valores possíveis: country (br, us, es, fr, it, de, jp, kr, ru, ca), gender (male, female, trans, couple), orientation (straight, gay, lesbian, bisexual). A chave "search" deve ser um termo de busca criativo em português. Exemplo: {"country": "br", "gender": "male", "orientation": "gay", "search": "músicos tocando ao vivo"}`;
+  const result = await callGeminiAPI(prompt);
+  if (result) {
+    try {
+      const suggestion = JSON.parse(result);
+      filterCountry.value = suggestion.country || "";
+      filterGender.value = suggestion.gender || "";
+      filterOrientation.value = suggestion.orientation || "";
+      searchInput.value = suggestion.search || "";
+      mobileSearchInput.value = suggestion.search || "";
+      filters.search = suggestion.search || "";
+      applyFilters();
+    } catch (e) {
+      console.error("Failed to parse Gemini suggestion:", e);
+      showToast("Não foi possível aplicar a sugestão da IAXCam.");
     }
-    // Filtro por gênero
-    if (
-      filters.gender &&
-      filters.gender !== "all" &&
-      broadcast.gender !== filters.gender
-    ) {
-      return false;
+  } else {
+    showToast("A IAXCam não conseguiu gerar uma sugestão. Tente novamente.");
+  }
+}
+async function handleGenerateBio(broadcast) {
+  const btn = document.getElementById("generate-bio-btn");
+  btn.disabled = true;
+  btn.innerHTML = `<span class="loader !w-6 !h-6 !border-4"></span> Carregando Bio do Usuário @${broadcast.username}...`;
+
+  let additionalDetails = "";
+  try {
+    const userInfoResponse = await fetch(
+      `https://api.xcam.gay/user/${broadcast.username}/Info`
+    );
+    if (userInfoResponse.ok) {
+      const userInfo = await userInfoResponse.json();
+      const details = [];
+      if (userInfo.age) details.push(`Idade: ${userInfo.age}`);
+      if (userInfo.ethnicity) details.push(`Etnia: ${userInfo.ethnicity}`);
+      if (userInfo.maritalStatus)
+        details.push(`Estado Civil: ${userInfo.maritalStatus}`);
+      if (userInfo.hairColor)
+        details.push(`Cor do Cabelo: ${userInfo.hairColor}`);
+      if (userInfo.bodyHair)
+        details.push(`Pelos Corporais: ${userInfo.bodyHair}`);
+      if (userInfo.bodyDecorations && userInfo.bodyDecorations.length > 0)
+        details.push(
+          `Decorações Corporais: ${userInfo.bodyDecorations.join(", ")}`
+        );
+      if (userInfo.maleBodyType)
+        details.push(`Tipo de Corpo: ${userInfo.maleBodyType}`);
+      if (userInfo.maleRole) details.push(`Função: ${userInfo.maleRole}`);
+      if (userInfo.bio && userInfo.bio.trim() !== "") {
+        const cleanBio = userInfo.bio.replace(/\[.*?\]/g, "");
+        details.push(`Bio Original: "${cleanBio}"`);
+      }
+      if (details.length > 0) {
+        additionalDetails = `\n- Detalhes Adicionais: ${details.join("; ")}`;
+      }
     }
-    // Filtro por orientação
-    if (
-      filters.orientation &&
-      filters.orientation !== "all" &&
-      broadcast.sexualOrientation !== filters.orientation
-    ) {
-      return false;
-    }
-    // Filtro por pesquisa de username
-    if (
-      filters.search &&
-      !broadcast.username.toLowerCase().includes(filters.search.toLowerCase())
-    ) {
-      return false;
-    }
-    return true;
+  } catch (error) {
+    console.error("Falha ao buscar informações do usuário:", error);
+  }
+  const prompt = `Crie uma biografia curta, criativa e envolvente em português para um(a) streamer da plataforma XCam com as seguintes informações:
+        - Nome de usuário: ${broadcast.username}
+        - País: ${getCountryName(broadcast.country)}
+        - Gênero: ${TRANSLATIONS.gender[broadcast.gender] || broadcast.gender}
+        - Orientação: ${
+          TRANSLATIONS.sexPreference[broadcast.sexualOrientation] ||
+          broadcast.sexualOrientation
+        }
+        - Tags: ${broadcast.tags
+          .map((t) => t.name)
+          .join(", ")}${additionalDetails}
+
+        Seja criativo e use um tom que combine com uma plataforma de streaming ao vivo. Não inclua informações que não foram fornecidas. Se a bio original for fornecida, use-a como inspiração para o tom e estilo, mas não a copie.`;
+  const bio = await callGeminiAPI(prompt);
+
+  geminiBioContent.classList.remove("hidden");
+
+  if (bio) {
+    geminiBioContent.textContent = bio;
+    btn.style.display = "none"; // Oculta o botão em caso de sucesso
+  } else {
+    geminiBioContent.textContent =
+      "Não foi possível carregar a biografia no momento.";
+    btn.disabled = false;
+    btn.innerHTML = "✨ Tentar Novamente"; // Altera o texto para permitir nova tentativa
+    btn.style.display = "flex"; // Garante que o botão está visível em caso de falha
+  }
+}
+// Toggle mobile menu
+function toggleMobileMenu() {
+  mobileMenu.classList.toggle("hidden");
+}
+// Handle search input with debounce
+function handleSearch(e) {
+  const searchTerm = e.target.value.toLowerCase();
+  if (e.target === searchInput) mobileSearchInput.value = searchTerm;
+  else searchInput.value = searchTerm;
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    filters.search = searchTerm;
+    filters.tags = searchTerm.replace(/ /g, ",");
+    goToPage(1);
+  }, 500);
+}
+// Apply filters from dropdowns
+function applyFilters() {
+  filters.country = filterCountry.value;
+  filters.gender = filterGender.value;
+  filters.orientation = filterOrientation.value;
+  goToPage(1);
+  showToast("Filtros aplicados com sucesso!");
+}
+// Initialize filters and fetch data based on URL parameters
+function initializeFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const page = parseInt(params.get("page"), 10) || 1;
+  const limit = parseInt(params.get("limit"), 10) || 16;
+  const country = params.get("country") || "";
+  const tags = params.get("tags") || "";
+  const urlOrder = params.get("order") || "mostViewers";
+  itemsPerPage = limit;
+  currentPage = page;
+  filters.country = country;
+  filters.tags = tags;
+  filters.search = tags.replace(/,/g, " "); // Sync search input with tags
+  order = urlOrder;
+  // Update UI to reflect URL state
+  filterCountry.value = country;
+  searchInput.value = filters.search;
+  mobileSearchInput.value = filters.search;
+  setOrderMenuActive(order);
+  fetchBroadcasts(currentPage, filters);
+}
+// Fetch initial data for Carousel and Top Streamers (unfiltered)
+async function fetchInitialData() {
+  const API_URL = "https://api.xcam.gay/";
+  try {
+    const response = await fetch(`${API_URL}?limit=5&page=1`);
+    if (!response.ok) throw new Error("Failed to fetch initial data");
+    const data = await response.json();
+    const items = data.broadcasts.items || [];
+    setupCarousel(items);
+    setupTopStreamers(items);
+  } catch (error) {
+    console.error("Error fetching initial data:", error);
+    // Handle error for these specific components if necessary
+  }
+}
+// Fetch broadcasts for the main grid, respecting filters
+async function fetchBroadcasts(page = 1, queryFilters = {}) {
+  showLoadingState();
+  const API_URL = "https://api.xcam.gay/";
+  const params = new URLSearchParams({
+    limit: itemsPerPage,
+    page: page
   });
+  if (order) params.append("order", order); // Adiciona order na query
+  // Append filters to params if they have values
+  if (queryFilters.search) params.append("username", queryFilters.search);
+  if (queryFilters.country) params.append("country", queryFilters.country);
+  if (queryFilters.gender) params.append("gender", queryFilters.gender);
+  if (queryFilters.orientation)
+    params.append("sexualOrientation", queryFilters.orientation);
+  if (queryFilters.tags) params.append("tags", queryFilters.tags);
+  try {
+    const response = await fetch(`${API_URL}?${params.toString()}`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    const newItems = data.broadcasts.items || [];
+    const totalBroadcasts = data.broadcasts.total || 0;
+    const broadcastsTitle = document.getElementById("broadcasts-title");
+    if (broadcastsTitle) {
+      broadcastsTitle.textContent = `${totalBroadcasts.toLocaleString(
+        "pt-BR"
+      )} Transmissões ao Vivo`;
+    }
+    newItems.forEach((item) => {
+      if (!broadcasts.some((b) => b.id === item.id)) {
+        broadcasts.push(item);
+      }
+    });
+    totalPages = data.broadcasts.totalPages;
+    currentPage = page;
+    renderBroadcasts(newItems);
+  } catch (error) {
+    console.error("Error fetching broadcasts:", error);
+    showErrorState();
+  }
 }
-// URLs padrão para "poster" e "profileImageURL" em branco ou nulo
-const defaultPosterURL = "https://drive.xcam.gay/0:/src/img/previewPoster.gif";
-const defaultProfileImageURL = "https://drive.xcam.gay/0:/src/img/profileImageURL.png";
-
-// Função para ordenar transmissões por número de espectadores
-function sortBroadcastsByViewers(broadcasts) {
-  return [...broadcasts].sort((a, b) => b.viewers - a.viewers);
+// UI State Management
+function showLoadingState() {
+  loadingState.classList.remove("hidden");
+  broadcastsGrid.classList.add("hidden");
+  errorState.classList.add("hidden");
+  emptyState.classList.add("hidden");
+  pagination.classList.add("hidden");
 }
 
-// Função para paginar resultados
-function paginateBroadcasts(broadcasts, page, itemsPerPage = itemsPerPage) {
-  const startIndex = (page - 1) * itemsPerPage;
-  return broadcasts.slice(startIndex, startIndex + itemsPerPage);
+function showErrorState() {
+  loadingState.classList.add("hidden");
+  errorState.classList.remove("hidden");
 }
 
-// Função para renderizar o carrossel
-function renderCarousel(topBroadcasts) {
-  const carouselContainer = document.getElementById("main-carousel");
-  carouselContainer.innerHTML = "";
-  topBroadcasts.slice(0, 10).forEach((broadcast, index) => {
-    // Substituir valores padrão para "poster" e "profileImageURL" se necessário
-    const posterURL = broadcast.preview.poster || defaultPosterURL;
-    const profileImageURL = broadcast.profileImageURL || defaultProfileImageURL;
+function showEmptyState() {
+  loadingState.classList.add("hidden");
+  emptyState.classList.remove("hidden");
+}
 
-    const slide = document.createElement("div");
-    slide.className = `carousel-slide ${index === 0 ? "active" : ""}`;
-    slide.innerHTML = `
-          <div class="carousel-image" style="background-image: url('${posterURL}')">
-            <div class="carousel-overlay"></div>
-            <div class="carousel-content">
-              <div class="carousel-badge">AO VIVO</div>
-              <h2 class="carousel-username">@${broadcast.username}</h2>
-              <div class="carousel-info">
-                <span class="carousel-country">
-                  <img src="https://flagcdn.com/w20/${
-                    broadcast.country
-                  }.png" alt="${broadcast.country}">
-                </span>
-                <span class="carousel-viewers">
-                  <i class="fas fa-eye"></i> ${formatViewers(broadcast.viewers)}
-                </span>
-              </div>
-              <button class="carousel-button" onclick="openModal('${
-                broadcast.id
-              }')">Assistir</button>
-            </div>
+function showBroadcastsGrid() {
+  loadingState.classList.add("hidden");
+  broadcastsGrid.classList.remove("hidden");
+  pagination.classList.remove("hidden");
+  errorState.classList.add("hidden");
+  emptyState.classList.add("hidden");
+}
+// Setup UI Components
+function populateCountryFilter() {
+  const selectElement = document.getElementById("filter-country");
+  // Sort countries by name for better UX
+  const sortedCountries = Object.entries(
+    COUNTRY_NAMES
+  ).sort(([, nameA], [, nameB]) => nameA.localeCompare(nameB));
+  for (const [code, name] of sortedCountries) {
+    if (code === "other") continue; // Skip 'other' category
+    const option = document.createElement("option");
+    option.value = code;
+    option.textContent = name;
+    selectElement.appendChild(option);
+  }
+}
+
+function setupCarousel(items) {
+  if (!items || items.length === 0) return;
+  carouselItems = items.slice(0, 5);
+  carouselItemsContainer.innerHTML = "";
+  carouselIndicators.innerHTML = "";
+  carouselItems.forEach((broadcast, index) => {
+    const posterUrl = `https://api.xcam.gay/poster/${broadcast.username}.jpg`;
+    const item = document.createElement("div");
+    item.className = `carousel-item opacity-0`;
+    item.dataset.username = broadcast.username; // Store username for iframe
+    item.innerHTML = `<div class="carousel-media-container absolute inset-0 bg-black">
+             <img src="${posterUrl}" alt="${broadcast.username}" class="w-full h-full object-cover carousel-poster">
+             <div class="viewer-count">
+               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+               </svg>
+               ${broadcast.viewers} <span class="viewer-label">espectadores</span>
+             </div>
+             <div class="badge-live">AO VIVO</div>
           </div>
-        `;
-    carouselContainer.appendChild(slide);
+          <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent z-10"></div>
+          <div class="absolute bottom-0 left-0 p-6 z-20">
+            <h2 class="text-2xl md:text-3xl font-bold text-white mb-1">@${broadcast.username}</h2>
+            <button class="bg-white text-black px-6 py-2 rounded-full font-medium hover:bg-opacity-90 transition-colors" onclick="openModal('${broadcast.id}')">Assistir</button>
+          </div>`;
+    carouselItemsContainer.appendChild(item);
+    const indicator = document.createElement("button");
+    indicator.className = `w-3 h-3 rounded-full ${
+      index === 0 ? "bg-white" : "bg-gray-500"
+    }`;
+    indicator.addEventListener("click", () => goToSlide(index));
+    carouselIndicators.appendChild(indicator);
   });
-  // Adicionar controles
-  const controls = document.createElement("div");
-  controls.className = "carousel-controls";
-  controls.innerHTML = `
-        <div class="carousel-control" onclick="prevSlide()">
-          <i class="fas fa-chevron-left"></i>
-        </div>
-        <div class="carousel-control" onclick="nextSlide()">
-          <i class="fas fa-chevron-right"></i>
-        </div>
-      `;
-  carouselContainer.appendChild(controls);
-  // Adicionar indicadores
-  const indicators = document.createElement("div");
-  indicators.className = "carousel-indicators";
-  topBroadcasts.slice(0, 5).forEach((_, index) => {
-    const indicator = document.createElement("span");
-    indicator.className = `carousel-indicator ${index === 0 ? "active" : ""}`;
-    indicator.onclick = () => changeSlide(index);
-    indicators.appendChild(indicator);
-  });
-  carouselContainer.appendChild(indicators);
-  // Iniciar rotação automática
+  goToSlide(0); // Initialize the first slide with an iframe
   startCarouselRotation();
 }
-
-// Função para renderizar o grid de transmissões
-function renderBroadcastGrid(broadcasts, page = 1) {
-  const gridContainer = document.getElementById("broadcasts-grid");
-  gridContainer.innerHTML = "";
-  if (broadcasts.length === 0) {
-    gridContainer.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">📺</div>
-            <h3>Nenhuma transmissão encontrada</h3>
-            <p>Tente ajustar seus filtros ou volte mais tarde.</p>
-          </div>
-        `;
-    return;
-  }
-  const paginatedBroadcasts = paginateBroadcasts(
-    broadcasts,
-    page,
-    itemsPerPage
-  );
-  paginatedBroadcasts.forEach((broadcast) => {
-    // Substituir valores padrão para "poster" e "profileImageURL" se necessário
-    const posterURL = broadcast.preview.poster || defaultPosterURL;
-    const profileImageURL = broadcast.profileImageURL || defaultProfileImageURL;
-
-    const card = document.createElement("div");
-    card.className = "broadcast-card";
-    card.onclick = () => openModal(broadcast.id);
-
-    // Preparar tags HTML se existirem
-    let tagsHTML = "";
-    if (broadcast.tags && broadcast.tags.length > 0) {
-      tagsHTML = `
-            <div class="card-tags">
-              ${broadcast.tags
-                .map((tag) => `<span class="tag">#${tag.name || tag}</span>`)
-                .join("")}
-            </div>
-          `;
-    }
-
-    card.innerHTML = `
-          <div class="card-thumbnail">
-            <img src="${posterURL}" alt="${broadcast.username}" loading="lazy">
-            <div class="card-overlay">
-              <div class="play-button">
-                <i class="fas fa-play"></i>
-              </div>
-            </div>
-            <div class="live-badge">AO VIVO</div>
-          </div>
-          <div class="card-info">
-            <div class="card-header">
-              <h3 class="card-username">@${broadcast.username}</h3>
-              <div class="card-country">
-                <img src="https://flagcdn.com/w20/${
-                  broadcast.country
-                }.png" alt="${broadcast.country}" title="${getCountryName(
-      broadcast.country
-    )}">
-              </div>
-            </div>
-            <div class="card-viewers">
-              <i class="fas fa-eye"></i> ${formatViewers(broadcast.viewers)}
-            </div>
-            ${tagsHTML}
-          </div>
-        `;
-    gridContainer.appendChild(card);
-  });
-  // Renderizar paginação
-  renderPagination(broadcasts.total || broadcasts.length, page, itemsPerPage);
-}
-
-// Função para calcular e renderizar a paginação
-function renderPagination(
-  totalItems,
-  currentPage,
-  itemsPerPage = itemsPerPage
-) {
-  const paginationContainer = document.getElementById("pagination");
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-  if (totalPages <= 1) {
-    paginationContainer.innerHTML = "";
-    return;
-  }
-
-  let paginationHTML = `
-    <button class="pagination-button" ${
-      currentPage === 1 ? "disabled" : ""
-    } onclick="changePage(1)">
-      <i class="fas fa-angle-double-left"></i>
-    </button>
-    <button class="pagination-button" ${
-      currentPage === 1 ? "disabled" : ""
-    } onclick="changePage(${currentPage - 1})">
-      <i class="fas fa-angle-left"></i>
-    </button>
-  `;
-
-  const startPage = Math.max(1, currentPage - 2);
-  const endPage = Math.min(totalPages, currentPage + 2);
-
-  for (let i = startPage; i <= endPage; i++) {
-    paginationHTML += `
-      <button class="pagination-number ${
-        i === currentPage ? "active" : ""
-      }" onclick="changePage(${i})">
-        ${i}
-      </button>
-    `;
-  }
-
-  paginationHTML += `
-    <button class="pagination-button" ${
-      currentPage === totalPages ? "disabled" : ""
-    } onclick="changePage(${currentPage + 1})">
-      <i class="fas fa-angle-right"></i>
-    </button>
-    <button class="pagination-button" ${
-      currentPage === totalPages ? "disabled" : ""
-    } onclick="changePage(${totalPages})">
-      <i class="fas fa-angle-double-right"></i>
-    </button>
-  `;
-
-  paginationContainer.innerHTML = paginationHTML;
-}
-
-function openModal(broadcastId) {
-  const broadcast = allBroadcasts.find((b) => b.id === broadcastId);
-  if (!broadcast) return;
-
-  const posterURL = broadcast.preview.poster || defaultPosterURL;
-  const profileImageURL = broadcast.profileImageURL || defaultProfileImageURL;
-
-  const modal = document.getElementById("broadcast-modal");
-  const modalContent = document.getElementById("modal-content");
-
-  // Preparar tags HTML se existirem
-  let tagsHTML = "";
-  if (broadcast.tags && broadcast.tags.length > 0) {
-    tagsHTML = `
-          <div class="modal-tags">
-            ${broadcast.tags
-              .map((tag) => `<span class="tag">#${tag.name || tag}</span>`)
-              .join("")}
-          </div>
-        `;
-  }
-  modalContent.innerHTML = `
-        <div class="modal-header">
-          <h2 class="modal-title">@${broadcast.username}</h2>
-          <button class="modal-close" onclick="closeModal()">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="modal-player">
-            <div class="player-container" id="player-container">
-              <div class="player-placeholder" style="background-image: url('${
-                broadcast.preview.poster
-              }')">
-                <div class="play-button-large" onclick="loadPlayer('${
-                  broadcast.id
-                }')">
-                  <i class="fas fa-play"></i>
-                </div>
-              </div>
-            </div>
-            <div class="modal-info">
-              <div class="streamer-info">
-                <div class="streamer-avatar">
-                  <img src="${broadcast.profileImageURL}" alt="${
-    broadcast.username
-  }">
-                </div>
-                <div class="streamer-details">
-                  <h3>@${broadcast.username}</h3>
-                  <div class="streamer-meta">
-                    <span class="country">
-                      <img src="https://flagcdn.com/w20/${
-                        broadcast.country
-                      }.png" alt="${broadcast.country}">
-                      ${getCountryName(broadcast.country)}
-                    </span>
-                    <span class="viewers">
-                      <i class="fas fa-eye"></i> ${formatViewers(
-                        broadcast.viewers
-                      )} espectadores
-                    </span>
-                  </div>
-                </div>
-              </div>
-              ${tagsHTML}
-              <div class="additional-info">
-                <span class="info-item">
-                  <i class="fas fa-venus-mars"></i> ${
-                    genderTranslations[broadcast.gender] || broadcast.gender
-                  }
-                </span>
-                <span class="info-item">
-                  <i class="fas fa-heart"></i> ${
-                    orientationTranslations[broadcast.sexualOrientation] ||
-                    broadcast.sexualOrientation
-                  }
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="related-broadcasts">
-            <h3>Transmissões Relacionadas</h3>
-            <div class="related-grid" id="related-grid">
-              <!-- Será preenchido dinamicamente -->
-            </div>
-          </div>
-        </div>
-      `;
-  modal.classList.add("active");
-  document.body.classList.add("modal-open");
-  // Carregar transmissões relacionadas
-  loadRelatedBroadcasts(broadcast);
-}
-// Função para carregar o player
-function loadPlayer(broadcastId) {
-  const playerContainer = document.getElementById("player-container");
-  playerContainer.innerHTML = `
-        <iframe 
-          src="https://xcam.gay/cam/?id=${broadcastId}" 
-          frameborder="0" 
-          allowfullscreen
-          class="player-iframe">
-        </iframe>
-      `;
-}
-// Função para carregar transmissões relacionadas
-function loadRelatedBroadcasts(currentBroadcast) {
-  const relatedGrid = document.getElementById("related-grid");
-  // Filtrar transmissões com mesmo gênero ou país, excluindo a atual
-  const related = allBroadcasts
-    .filter(
-      (b) =>
-        b.id !== currentBroadcast.id &&
-        (b.gender === currentBroadcast.gender ||
-          b.country === currentBroadcast.country)
-    )
-    .slice(0, 4);
-  if (related.length === 0) {
-    relatedGrid.innerHTML =
-      "<p>Nenhuma transmissão relacionada encontrada.</p>";
-    return;
-  }
-  relatedGrid.innerHTML = "";
-  related.forEach((broadcast) => {
-    const relatedCard = document.createElement("div");
-    relatedCard.className = "related-card";
-    relatedCard.onclick = () => {
-      closeModal();
-      setTimeout(() => openModal(broadcast.id), 300);
-    };
-    relatedCard.innerHTML = `
-          <div class="related-thumbnail">
-            <img src="${broadcast.preview.poster}" alt="${
-      broadcast.username
-    }" loading="lazy">
-            <div class="related-overlay">
-              <div class="related-play">
-                <i class="fas fa-play"></i>
-              </div>
-            </div>
-            <div class="related-badge">AO VIVO</div>
-          </div>
-          <div class="related-info">
-            <h4>@${broadcast.username}</h4>
-            <div class="related-meta">
-              <span class="related-country">
-                <img src="https://flagcdn.com/w20/${
-                  broadcast.country
-                }.png" alt="${broadcast.country}">
-              </span>
-              <span class="related-viewers">
-                <i class="fas fa-eye"></i> ${formatViewers(broadcast.viewers)}
-              </span>
-            </div>
-          </div>
-        `;
-    relatedGrid.appendChild(relatedCard);
-  });
-}
-// Função para fechar o modal
-function closeModal() {
-  const modal = document.getElementById("broadcast-modal");
-  modal.classList.remove("active");
-  document.body.classList.remove("modal-open");
-  // Limpar o player para parar qualquer reprodução
-  setTimeout(() => {
-    const playerContainer = document.getElementById("player-container");
-    if (playerContainer) {
-      playerContainer.innerHTML = "";
-    }
-  }, 300);
-}
-// Função para formatar número de espectadores
-function formatViewers(viewers) {
-  if (viewers >= 1000) {
-    return (viewers / 1000).toFixed(1) + "k";
-  }
-  return viewers.toString();
-}
-// Função para obter nome do país a partir do código
-function getCountryName(countryCode) {
-  return countryNames[countryCode] || countryCode.toUpperCase();
-}
-// Função para mostrar notificações toast
-function showToast(message, type = "info") {
-  const toast = document.createElement("div");
-  toast.className = `toast toast-${type}`;
-  const icons = {
-    success: "fas fa-check-circle",
-    error: "fas fa-exclamation-circle",
-    info: "fas fa-info-circle",
-    warning: "fas fa-exclamation-triangle"
-  };
-  toast.innerHTML = `
-        <div class="toast-icon">
-          <i class="${icons[type]}"></i>
-        </div>
-        <div class="toast-message">${message}</div>
-      `;
-  const toastContainer = document.getElementById("toast-container");
-  toastContainer.appendChild(toast);
-  // Animar entrada
-  setTimeout(() => {
-    toast.classList.add("show");
-  }, 10);
-  // Remover após 3 segundos
-  setTimeout(() => {
-    toast.classList.remove("show");
-    setTimeout(() => {
-      toast.remove();
-    }, 300);
-  }, 3000);
-}
-// Função para controle do carrossel
-let carouselInterval;
-let currentSlide = 0;
 
 function startCarouselRotation() {
-  carouselInterval = setInterval(() => {
-    nextSlide();
-  }, 5000);
+  setInterval(showNextSlide, 15000);
 }
 
-function stopCarouselRotation() {
-  clearInterval(carouselInterval);
-}
-
-function changeSlide(index) {
-  const slides = document.querySelectorAll(".carousel-slide");
-  const indicators = document.querySelectorAll(".carousel-indicator");
-  if (slides.length === 0) return;
-  if (index >= slides.length) index = 0;
-  if (index < 0) index = slides.length - 1;
-  // Remover classe active de todos
-  slides.forEach((slide) => slide.classList.remove("active"));
-  indicators.forEach((indicator) => indicator.classList.remove("active"));
-  // Adicionar classe active ao slide atual
-  slides[index].classList.add("active");
-  indicators[index].classList.add("active");
-  currentSlide = index;
-  // Reiniciar rotação
-  stopCarouselRotation();
-  startCarouselRotation();
-}
-
-function nextSlide() {
-  changeSlide(currentSlide + 1);
-}
-
-function prevSlide() {
-  changeSlide(currentSlide - 1);
-}
-// Toggle do menu mobile
-function toggleMobileMenu() {
-  const mobileMenu = document.getElementById("mobile-menu");
-  mobileMenu.classList.toggle("active");
-}
-// Função para aplicar filtros
-function applyFilters() {
-  currentFilters.country = document.getElementById("country-filter").value;
-  currentFilters.gender = document.getElementById("gender-filter").value;
-  currentFilters.orientation = document.getElementById(
-    "orientation-filter"
-  ).value;
-  filteredBroadcasts = filterBroadcasts(allBroadcasts, currentFilters);
-  currentPage = 1;
-  renderBroadcastGrid(filteredBroadcasts, currentPage);
-  showToast("Filtros aplicados com sucesso!", "success");
-}
-function changePage(page) {
-  currentPage = page;
-  renderBroadcastGrid(filteredBroadcasts, currentPage, itemsPerPage);
-  // Scroll para o topo do grid
-  document.getElementById("broadcasts-grid").scrollIntoView({
-    behavior: "smooth"
-  });
-}
-// Função para popular opções de países no filtro
-function populateCountryOptions() {
-  const countrySelect = document.getElementById("country-filter");
-  if (!countrySelect) return;
-  // Obter países únicos das transmissões
-  const uniqueCountries = [...new Set(allBroadcasts.map((b) => b.country))];
-  // Adicionar opção "Todos"
-  countrySelect.innerHTML = '<option value="all">Todos os países</option>';
-  // Adicionar opções para cada país
-  uniqueCountries.forEach((countryCode) => {
-    const option = document.createElement("option");
-    option.value = countryCode;
-    option.textContent = getCountryName(countryCode);
-    countrySelect.appendChild(option);
-  });
-}
-// Configurar pesquisa
-function setupSearch() {
-  const searchInput = document.getElementById("search-input");
-  const mobileSearchInput = document.getElementById("mobile-search-input");
-  // Função de debounce para evitar muitas chamadas
-  let searchTimeout;
-
-  function performSearch(value) {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-      currentFilters.search = value;
-      filteredBroadcasts = filterBroadcasts(allBroadcasts, currentFilters);
-      currentPage = 1;
-      renderBroadcastGrid(filteredBroadcasts, currentPage);
-    }, 300);
-  }
-  searchInput.addEventListener("input", (e) => {
-    const value = e.target.value;
-    mobileSearchInput.value = value;
-    performSearch(value);
-  });
-  mobileSearchInput.addEventListener("input", (e) => {
-    const value = e.target.value;
-    searchInput.value = value;
-    performSearch(value);
-  });
-}
-// Inicialização da aplicação
-async function initApp() {
-  // Mostrar estado de carregamento apenas na primeira inicialização
-  if (allBroadcasts.length === 0) {
-    document.getElementById("broadcasts-grid").innerHTML = `
-        <div class="loading-state">
-          <div class="loader"></div>
-          <p>Carregando transmissões...</p>
-        </div>
-      `;
-  } else {
-    // Exibir toast para indicar que está atualizando
-    showToast("Atualizando transmissões...", "info");
-  }
-
-  try {
-    // Carregar dados da API
-    const data = await fetchBroadcasts();
-    const newBroadcasts = data.broadcasts.items;
-
-    // Ordenar por número de espectadores
-    const sortedBroadcasts = sortBroadcastsByViewers(newBroadcasts);
-
-    // Atualizar somente se houver mudanças
-    if (JSON.stringify(sortedBroadcasts) !== JSON.stringify(allBroadcasts)) {
-      allBroadcasts = sortedBroadcasts;
-      filteredBroadcasts = [...allBroadcasts];
-
-      // Renderizar carrossel com top 5
-      renderCarousel(allBroadcasts.slice(0, 5));
-
-      // Renderizar grid de transmissões
-      renderBroadcastGrid(filteredBroadcasts, currentPage);
-
-      // Atualizar opções de países no filtro
-      populateCountryOptions();
-
-      // Exibir toast de sucesso após a atualização
-      showToast("Transmissões atualizadas com sucesso!", "success");
+function goToSlide(index) {
+  const items = document.querySelectorAll(".carousel-item");
+  const indicators = document.querySelectorAll("#carousel-indicators button");
+  items.forEach((item, i) => {
+    const mediaContainer = item.querySelector(".carousel-media-container");
+    if (i === index) {
+      item.classList.remove("opacity-0");
+      // Se não existe um poster, adiciona
+      if (!mediaContainer.querySelector("img")) {
+        const broadcast = carouselItems[i];
+        const posterUrl = `https://api.xcam.gay/poster/${broadcast.username}.jpg`;
+        // CORREÇÃO: A string template foi atribuída a mediaContainer.innerHTML
+        mediaContainer.innerHTML = `<img src="${posterUrl}" alt="${broadcast.username}" class="w-full h-full object-cover carousel-poster">
+             <div class="viewer-count">
+               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+               </svg>
+               ${broadcast.viewers} <span class="viewer-label">espectadores</span>
+             </div>
+             <div class="badge-live">AO VIVO</div>`;
+      }
+      // Se não existe um loader, adiciona
+      if (!mediaContainer.querySelector(".carousel-loader")) {
+        const loader = document.createElement("div");
+        loader.className =
+          "carousel-loader absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10";
+        loader.innerHTML = '<span class="loader"></span>';
+        mediaContainer.appendChild(loader);
+      }
+      // Se não existe um iframe, adiciona
+      if (!mediaContainer.querySelector("iframe")) {
+        const username = item.dataset.username;
+        const iframe = document.createElement("iframe");
+        iframe.className = "w-full h-full border-0 absolute inset-0";
+        iframe.src = `https://samuelpassamani.github.io/XCam/xcam-player/hls/?user=${username}`;
+        iframe.setAttribute("allow", "autoplay; encrypted-media");
+        iframe.style.opacity = "0";
+        iframe.onload = () => {
+          // Remove loader
+          const loader = mediaContainer.querySelector(".carousel-loader");
+          if (loader) loader.remove();
+          // Remove poster
+          const poster = mediaContainer.querySelector(".carousel-poster");
+          if (poster) poster.remove();
+          iframe.style.opacity = "1";
+        };
+        mediaContainer.appendChild(iframe);
+      }
     } else {
-      // Exibir toast informando que não houve mudanças
-      showToast("Nenhuma atualização foi necessária.", "info");
+      item.classList.add("opacity-0");
+      // Remove iframe e loader, restaura poster
+      const iframe = mediaContainer.querySelector("iframe");
+      if (iframe) iframe.remove();
+      const loader = mediaContainer.querySelector(".carousel-loader");
+      if (loader) loader.remove();
+
+      const broadcast = carouselItems[i];
+      const posterUrl = `https://api.xcam.gay/poster/${broadcast.username}.jpg`;
+      // CORREÇÃO: A string template foi atribuída a mediaContainer.innerHTML
+      mediaContainer.innerHTML = `<img src="${posterUrl}" alt="${broadcast.username}" class="w-full h-full object-cover carousel-poster">
+             <div class="viewer-count">
+               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+               </svg>
+               ${broadcast.viewers} <span class="viewer-label">espectadores</span>
+             </div>
+             <div class="badge-live">AO VIVO</div>`;
     }
-  } catch (error) {
-    console.error("Erro na atualização:", error);
-    if (allBroadcasts.length === 0) {
-      document.getElementById("broadcasts-grid").innerHTML = `
-          <div class="error-state">
-            <div class="error-icon">❌</div>
-            <h3>Ops! Algo deu errado</h3>
-            <p>Não foi possível carregar as transmissões.</p>
-            <button onclick="initApp()">Tentar novamente</button>
+  });
+  indicators.forEach((indicator, i) => {
+    indicator.classList.toggle("bg-white", i === index);
+    indicator.classList.toggle("bg-gray-500", i !== index);
+  });
+  currentCarouselIndex = index;
+}
+
+function showPrevSlide() {
+  let newIndex = currentCarouselIndex - 1;
+  if (newIndex < 0) newIndex = carouselItems.length - 1;
+  goToSlide(newIndex);
+}
+
+function showNextSlide() {
+  let newIndex = currentCarouselIndex + 1;
+  if (newIndex >= carouselItems.length) newIndex = 0;
+  goToSlide(newIndex);
+}
+
+function setupTopStreamers(items) {
+  if (!items || items.length === 0) return;
+  const topStreamers = [...items]
+    .sort((a, b) => b.viewers - a.viewers)
+    .slice(0, 5);
+  topStreamersContainer.innerHTML = "";
+  topStreamers.forEach((streamer) => {
+    const item = document.createElement("div");
+    item.className =
+      "flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer";
+    item.onclick = () => openModal(streamer.id);
+    item.innerHTML = `
+          <img src="https://api.xcam.gay/avatar/${streamer.username}.jpg" alt="${streamer.username}" class="w-10 h-10 rounded-full object-cover">
+          <div>
+            <h4 class="font-medium text-white">@${streamer.username}</h4>
+            <div class="flex items-center text-sm text-gray-400">
+              <span class="flag-icon" style="background-image: url(https://flagcdn.com/w20/${streamer.country}.png)"></span>
+              <span>${streamer.viewers} espectadores</span>
+            </div>
           </div>
         `;
-    } else {
-      // Exibir toast de erro, mas manter os dados existentes
-      showToast(
-        "Erro ao atualizar transmissões. Mantendo dados atuais.",
-        "error"
-      );
-    }
+    topStreamersContainer.appendChild(item);
+  });
+}
+/**
+ * Handles the mouse entering the preview area of a broadcast card.
+ * It creates and displays an iframe for a live preview.
+ * @param {MouseEvent} event The mouseenter event.
+ */
+function handleCardHover(event) {
+  const previewContainer = event.currentTarget;
+  const username = previewContainer.dataset.username;
+  if (!username) return;
+  // Find existing elements
+  const poster = previewContainer.querySelector(".card-poster");
+  // If an iframe is already there, do nothing
+  if (previewContainer.querySelector("iframe")) return;
+  // Create a loader element
+  const loader = document.createElement("div");
+  loader.className =
+    "card-loader absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10";
+  loader.innerHTML = '<span class="loader"></span>';
+  previewContainer.appendChild(loader);
+  // Create the iframe for the live preview
+  const iframe = document.createElement("iframe");
+  iframe.style.opacity = "0"; // Start hidden
+  iframe.className =
+    "absolute inset-0 w-full h-full border-0 transition-opacity duration-300 aspect-video";
+  iframe.src = `https://samuelpassamani.github.io/XCam/xcam-player/hls/?user=${username}`;
+  iframe.setAttribute("frameborder", "0");
+  iframe.setAttribute("allow", "autoplay; encrypted-media");
+  iframe.setAttribute("allowfullscreen", "true");
+  // When the iframe has loaded, fade it in and remove the loader
+  iframe.onload = () => {
+    if (loader) loader.remove();
+    if (poster) poster.style.display = "none"; // Hide poster completely
+    iframe.style.opacity = "1";
+  };
+  // Add the iframe to the container, but before the overlays
+  const badge = previewContainer.querySelector(".badge-live");
+  const viewers = previewContainer.querySelector(
+    "div.absolute.bottom-2.right-2"
+  );
+  previewContainer.insertBefore(iframe, badge);
+}
+/**
+ * Handles the mouse leaving the preview area of a broadcast card.
+ * It removes the iframe and restores the poster image.
+ * @param {MouseEvent} event The mouseleave event.
+ */
+function handleCardMouseLeave(event) {
+  const previewContainer = event.currentTarget;
+  // Find elements
+  const poster = previewContainer.querySelector(".card-poster");
+  const iframe = previewContainer.querySelector("iframe");
+  const loader = previewContainer.querySelector(".card-loader");
+  // Restore the poster image
+  if (poster) {
+    poster.style.display = "block";
+  }
+  // Stop and remove the iframe and loader
+  if (iframe) {
+    iframe.src = "about:blank";
+    iframe.remove();
+  }
+  if (loader) {
+    loader.remove();
   }
 }
-
-// Fechar modal ao clicar fora
-window.addEventListener("click", (e) => {
-  const modal = document.getElementById("broadcast-modal");
-  if (e.target === modal) {
-    closeModal();
+// Render broadcasts grid
+function renderBroadcasts(broadcastsList) {
+  if (!broadcastsList || broadcastsList.length === 0) {
+    showEmptyState();
+    return;
   }
-});
+  broadcastsGrid.innerHTML = "";
+  broadcastsList.forEach((broadcast) => {
+    const posterUrl = `https://api.xcam.gay/poster/${broadcast.username}.jpg`;
+    const card = document.createElement("div");
+    card.className =
+      "bg-gray-900 rounded-xl overflow-hidden border border-gray-800 transition-all duration-300 card-hover flex flex-col max-w-full";
+    // tags com classe card-tag para efeito gradiente
+    const tagsHTML =
+      broadcast.tags && broadcast.tags.length > 0
+        ? broadcast.tags
+            .map((tag) => `<span class="card-tag">#${tag.name}</span>`)
+            .join(" ")
+        : "";
+    card.innerHTML = `
+          <div class="relative card-preview-container aspect-video cursor-pointer">
+            <img src="${posterUrl}" alt="${
+      broadcast.username
+    }" class="card-poster w-full aspect-video object-cover pointer-events-none">
+            <span class="badge-live absolute top-2 right-2 px-2 py-1 rounded-md text-white text-xs font-medium z-20">AO VIVO</span>
+            <div class="absolute bottom-2 right-2 bg-black bg-opacity-70 px-2 py-1 rounded-md text-white text-xs flex items-center z-20">
+              <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+              ${broadcast.viewers}
+            </div>
+            <div class="absolute inset-0 z-30 cursor-pointer card-click-overlay"></div>
+          </div>
+          <div class="p-4 card-info-container">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="font-bold text-white">@${broadcast.username}</h3>
+              <span class="flag-icon" style="background-image: url(https://flagcdn.com/w20/${
+                broadcast.country
+              }.png)" title="${getCountryName(
+      broadcast.country
+    )}" alt="${getCountryName(broadcast.country)}"></span>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-2">
+              <span class="bg-gray-800 text-gray-300 px-2 py-1 rounded-full text-xs flex items-center">
+                <img src="${GENDER_ICON_SVG}" class="w-3 h-3 mr-1.5" alt="Gender Icon">
+                ${TRANSLATIONS.gender[broadcast.gender] || broadcast.gender}
+              </span>
+              <span class="bg-gray-800 text-gray-300 px-2 py-1 rounded-full text-xs flex items-center">
+                <img src="${ORIENTATION_ICON_SVG}" class="w-3 h-3 mr-1.5" alt="Orientation Icon">
+                ${
+                  TRANSLATIONS.sexPreference[broadcast.sexualOrientation] ||
+                  broadcast.sexualOrientation
+                }
+              </span>
+              <span class="bg-gray-800 text-gray-300 px-2 py-1 rounded-full text-xs flex items-center">
+                <img src="${BROADCAST_TYPE_ICON_SVG}" class="w-3 h-3 mr-1.5" alt="Broadcast Type Icon">
+                ${
+                  TRANSLATIONS.broadcastType[broadcast.broadcastType] ||
+                  broadcast.broadcastType
+                }
+              </span>
+            </div>
+            <div class="flex flex-wrap gap-1 mt-2">${tagsHTML}</div>
+          </div>
+        `;
+    // Find the new containers inside the card
+    const previewContainer = card.querySelector(".card-preview-container");
+    previewContainer.dataset.username = broadcast.username;
+    previewContainer.style.cursor = "pointer";
+    card.addEventListener("mouseenter", function (e) {
+      handleCardHover({
+        currentTarget: previewContainer
+      });
+    });
+    card.addEventListener("mouseleave", function (e) {
+      handleCardMouseLeave({
+        currentTarget: previewContainer
+      });
+    });
+    const clickOverlay = previewContainer.querySelector(".card-click-overlay");
+    clickOverlay.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openModal(broadcast.id);
+    });
+    // Adiciona evento de clique nas tags para filtrar
+    const tagElements = card.querySelectorAll(".card-tag");
+    tagElements.forEach((tagEl) => {
+      tagEl.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const tagName = tagEl.textContent.replace("#", "").trim();
+        filters.tags = tagName;
+        searchInput.value = tagName;
+        mobileSearchInput.value = tagName;
+        goToPage(1);
+      });
+    });
+    broadcastsGrid.appendChild(card);
+  });
+  updatePagination();
+  showBroadcastsGrid();
+}
+// Pagination Logic
+function updatePagination() {
+  pageNumbers.innerHTML = "";
+  let isMobile = window.innerWidth < 640;
+  let startPage, endPage;
+  if (isMobile) {
+    // Mostra só 3 páginas
+    startPage = Math.max(1, currentPage - 1);
+    endPage = Math.min(totalPages, startPage + 2);
+    if (endPage - startPage < 2) {
+      startPage = Math.max(1, endPage - 2);
+    }
+  } else {
+    startPage = Math.max(1, currentPage - 2);
+    endPage = Math.min(totalPages, currentPage + 2);
+    if (endPage - startPage < 4) {
+      if (startPage === 1) endPage = Math.min(5, totalPages);
+      else if (endPage === totalPages) startPage = Math.max(1, totalPages - 4);
+    }
+  }
+  for (let i = startPage; i <= endPage; i++) {
+    const pageButton = document.createElement("button");
+    pageButton.className = `pagination-btn w-8 h-8 flex items-center justify-center rounded-md text-sm ${
+      i === currentPage ? "pagination-active" : "bg-gray-800 hover:bg-gray-700"
+    }`;
+    pageButton.textContent = i;
+    pageButton.addEventListener("click", () => goToPage(i));
+    pageNumbers.appendChild(pageButton);
+  }
+  // Botões de navegação
+  if (isMobile) {
+    // Primeira página: seta dupla para a esquerda
+    firstPageButton.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 19l-7-7 7-7" />
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7" />
+  </svg>`;
+    // Anterior: seta simples para a esquerda
+    prevPageButton.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+  </svg>`;
+    // Próxima: seta simples para a direita
+    nextPageButton.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+  </svg>`;
+    // Última página: seta dupla para a direita
+    lastPageButton.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5l7 7-7 7" />
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7" />
+  </svg>`;
+    firstPageButton.title = "Primeira";
+    prevPageButton.title = "Anterior";
+    nextPageButton.title = "Próxima";
+    lastPageButton.title = "Última";
+  } else {
+    firstPageButton.textContent = "Primeira";
+    prevPageButton.textContent = "Anterior";
+    nextPageButton.textContent = "Próxima";
+    lastPageButton.textContent = "Última";
+  }
+  [firstPageButton, prevPageButton].forEach(
+    (btn) => (btn.disabled = currentPage === 1)
+  );
+  [nextPageButton, lastPageButton].forEach(
+    (btn) => (btn.disabled = currentPage === totalPages)
+  );
+  [firstPageButton, prevPageButton, nextPageButton, lastPageButton].forEach(
+    (button) => {
+      button.classList.toggle("opacity-50", button.disabled);
+      button.classList.toggle("cursor-not-allowed", button.disabled);
+    }
+  );
+}
 
-// Iniciar a aplicação e configurar atualizações automáticas quando o DOM estiver pronto
-document.addEventListener(DOMContentLoaded);
+function goToPage(page) {
+  // Correction: Allow navigation to page 1 even if totalPages is 0 (for new searches)
+  if (page < 1 || (page > totalPages && page !== 1)) return;
+  currentPage = page;
+  updateUrl();
+  fetchBroadcasts(currentPage, filters);
+}
+
+function updateUrl() {
+  const params = new URLSearchParams();
+  if (itemsPerPage !== 16) params.set("limit", itemsPerPage);
+  if (currentPage > 1) params.set("page", currentPage);
+  if (filters.country) params.set("country", filters.country);
+  if (filters.tags) params.set("tags", filters.tags);
+  // Add other filters from the state if they should be reflected in the URL
+  if (filters.gender) params.set("gender", filters.gender);
+  if (filters.orientation) params.set("sexualOrientation", filters.orientation);
+  if (order && order !== "mostViewers") params.set("order", order);
+  // Adiciona order na URL
+  else if (order === "mostViewers") params.delete("order");
+  const newUrl = `${window.location.pathname}?${params.toString()}`;
+  history.pushState(
+    {
+      path: newUrl
+    },
+    "",
+    newUrl
+  );
+}
+// Função utilitária para alterar o order global e atualizar grade/página
+function setOrder(newOrder) {
+  if (order !== newOrder) {
+    order = newOrder;
+    goToPage(1);
+  }
+}
+// Modal Logic
+function openModal(broadcastId) {
+  const broadcast = broadcasts.find((b) => b.id === broadcastId);
+  if (!broadcast) {
+    showToast("Transmissão não encontrada. Tente recarregar.");
+    return;
+  }
+  // Populate text and static info
+  modalUsername.textContent = `@${broadcast.username}`;
+  modalAvatar.src = broadcast.profileImageURL;
+  modalCountryFlag.style.backgroundImage = `url(https://flagcdn.com/w20/${broadcast.country}.png)`;
+  modalCountryName.textContent = getCountryName(broadcast.country);
+  modalViewers.textContent = broadcast.viewers;
+  modalGender.innerHTML = `<img src="${GENDER_ICON_SVG}" class="w-4 h-4 mr-2" alt="Gender Icon">${
+    TRANSLATIONS.gender[broadcast.gender] || broadcast.gender
+  }`;
+  modalOrientation.innerHTML = `<img src="${ORIENTATION_ICON_SVG}" class="w-4 h-4 mr-2" alt="Orientation Icon">${
+    TRANSLATIONS.sexPreference[broadcast.sexualOrientation] ||
+    broadcast.sexualOrientation
+  }`;
+  modalType.innerHTML = `<img src="${BROADCAST_TYPE_ICON_SVG}" class="w-4 h-4 mr-2" alt="Broadcast Type Icon">${
+    TRANSLATIONS.broadcastType[broadcast.broadcastType] ||
+    broadcast.broadcastType
+  }`;
+  // Populate tags
+  modalTags.innerHTML = "";
+  if (broadcast.tags && broadcast.tags.length > 0) {
+    broadcast.tags.forEach((tag) => {
+      const tagElement = document.createElement("span");
+      tagElement.className =
+        "bg-xcam-blue bg-opacity-30 text-xcam-blue px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-opacity-50 transition-colors";
+      tagElement.textContent = `#${tag.name}`;
+      tagElement.addEventListener("click", () => {
+        filters.tags = tag.name;
+        searchInput.value = tag.name;
+        mobileSearchInput.value = tag.name;
+        closeModalHandler();
+        goToPage(1);
+      });
+      modalTags.appendChild(tagElement);
+    });
+  }
+  // Reset and setup Gemini Bio section
+  geminiBioContent.classList.add("hidden");
+  geminiBioContent.textContent = "";
+  const btn = document.getElementById("generate-bio-btn");
+  btn.style.display = "flex"; // Garante que o botão está visível
+  btn.innerHTML = `✨ Carregar Biografia do Usuário @${broadcast.username}`;
+  btn.onclick = () => handleGenerateBio(broadcast);
+  handleGenerateBio(broadcast); // Chama a função automaticamente
+
+  // Construct the new iframe URL
+  const posterUrl = encodeURIComponent(
+    `https://api.xcam.gay/poster/${broadcast.username}.jpg`
+  );
+  const tagsString = broadcast.tags
+    ? encodeURIComponent(broadcast.tags.map((tag) => tag.name).join(","))
+    : "";
+  const iframeUrl = `https://samuelpassamani.github.io/XCam/xcam-beta/player/?user=${broadcast.username}&img=${posterUrl}&tags=${tagsString}`;
+  // Set iframe source and show it, hide the thumbnail/play button
+  modalIframe.src = iframeUrl;
+  document.getElementById("modal-player").classList.add("hidden");
+  modalIframe.classList.remove("hidden");
+  // Populate related broadcasts
+  const related = broadcasts
+    .filter(
+      (b) =>
+        b.id !== broadcastId &&
+        (b.gender === broadcast.gender ||
+          b.sexualOrientation === broadcast.sexualOrientation)
+    )
+    .slice(0, 3);
+  relatedBroadcasts.innerHTML = "";
+  related.forEach((r) => {
+    const item = document.createElement("div");
+    item.className = "cursor-pointer hover:opacity-90 transition-opacity";
+    item.onclick = () => openModal(r.id);
+    item.innerHTML = `
+          <div class="relative"><img src="https://api.xcam.gay/poster/${r.username}.jpg" alt="${r.username}" class="w-full aspect-video object-cover rounded-lg"><span class="badge-live absolute top-2 right-2 px-2 py-1 rounded-md text-white text-xs font-medium">AO VIVO</span></div>
+          <h4 class="font-medium text-white mt-2">@${r.username}</h4>
+          <div class="flex items-center text-sm text-gray-400"><span class="flag-icon" style="background-image: url(https://flagcdn.com/w20/${r.country}.png)"></span><span>${r.viewers} espectadores</span></div>
+        `;
+    relatedBroadcasts.appendChild(item);
+  });
+  // Show the modal
+  broadcastModal.style.display = "block";
+  document.body.style.overflow = "hidden";
+}
+
+function closeModalHandler() {
+  broadcastModal.style.display = "none";
+  document.body.style.overflow = "auto";
+  modalIframe.src = "";
+}
+// Utility Functions
+function showToast(message) {
+  toastMessage.textContent = message;
+  toast.classList.remove("hidden");
+  setTimeout(() => toast.classList.add("hidden"), 3000);
+}
+
+function getCountryName(countryCode) {
+  return COUNTRY_NAMES[countryCode] || countryCode.toUpperCase();
+}
+// Make functions available globally for inline onclick attributes
+window.openModal = openModal;
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("https://samuelpassamani.github.io/XCam/xcam-beta/sw.js")
+      .then((registration) => {
+        console.log("Service Worker registrado com sucesso:", registration);
+      })
+      .catch((error) => {
+        console.log("Falha ao registrar o Service Worker:", error);
+      });
+  });
+}
