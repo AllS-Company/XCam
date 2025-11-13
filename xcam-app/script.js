@@ -522,7 +522,7 @@ function goToSlide(index) {
         const username = item.dataset.username;
         const iframe = document.createElement("iframe");
         iframe.className = "w-full h-full border-0 absolute inset-0";
-        iframe.src = `https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-player/hls/?user=${username}`;
+        iframe.src = `https://samuelpassamani.github.io/XCam/xcam-player/hls/?user=${username}`;
         iframe.setAttribute("allow", "autoplay; encrypted-media");
         iframe.style.opacity = "0";
         iframe.onload = () => {
@@ -625,7 +625,7 @@ function handleCardHover(event) {
   iframe.style.opacity = "0"; // Start hidden
   iframe.className =
     "absolute inset-0 w-full h-full border-0 transition-opacity duration-300 aspect-video";
-  iframe.src = `https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-player/hls/?user=${username}`;
+  iframe.src = `https://samuelpassamani.github.io/XCam/xcam-player/hls/?user=${username}`;
   iframe.setAttribute("frameborder", "0");
   iframe.setAttribute("allow", "autoplay; encrypted-media");
   iframe.setAttribute("allowfullscreen", "true");
@@ -983,7 +983,9 @@ window.openModal = openModal;
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-beta/sw.js")
+      .register(
+        "https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-beta/sw.js"
+      )
       .then((registration) => {
         console.log("Service Worker registrado com sucesso:", registration);
       })
