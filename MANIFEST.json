@@ -1,0 +1,97 @@
+{
+  "name": "XCam",
+  "version": "3.0.0",
+  "description": "Plataforma Modular para Transmissões ao Vivo",
+  "author": "Samuel Passamani",
+  "license": "LICENSE",
+  "modules": [
+    {
+      "name": "xcam-api",
+      "type": "service",
+      "description": "API Central (Cloudflare Worker) que serve como o coração do sistema.",
+      "technologies": ["JavaScript", "Cloudflare Worker"],
+      "path": "xcam-api/"
+    },
+    {
+      "name": "xcam-app",
+      "type": "frontend",
+      "description": "Aplicação Principal (Frontend legado).",
+      "technologies": ["HTML", "CSS", "JavaScript"],
+      "path": "xcam-app/"
+    },
+    {
+      "name": "xcam-beta",
+      "type": "frontend",
+      "description": "Aplicação Moderna (Frontend com Módulos ES).",
+      "technologies": ["HTML", "CSS", "JavaScript", "ESM"],
+      "path": "xcam-beta/"
+    },
+    {
+      "name": "xcam-drive",
+      "type": "service",
+      "description": "CDN de Arquivos (Cloudflare Worker) para assets públicos.",
+      "technologies": ["JavaScript", "Cloudflare Worker"],
+      "path": "xcam-drive/"
+    },
+    {
+      "name": "xcam-modal",
+      "type": "component",
+      "description": "Componente de UI isolado (iframe) para detalhes de streamers.",
+      "technologies": ["HTML", "CSS", "JavaScript"],
+      "path": "xcam-modal/"
+    },
+    {
+      "name": "xcam-player",
+      "type": "component",
+      "description": "Player de Vídeo Unificado (baseado em JWPlayer).",
+      "technologies": ["HTML", "CSS", "JavaScript", "JWPlayer"],
+      "path": "xcam-player/"
+    },
+    {
+      "name": "xcam-rec",
+      "type": "backend",
+      "description": "Sistema de Gravação em Python.",
+      "technologies": ["Python", "FFmpeg"],
+      "path": "xcam-rec/"
+    },
+    {
+      "name": "xcam-db",
+      "type": "data",
+      "description": "Banco de Dados (Git-as-a-Database) para metadados.",
+      "technologies": ["JSON"],
+      "path": "xcam-db/"
+    },
+    {
+      "name": "xcam-redirects",
+      "type": "configuration",
+      "description": "Gerenciador de Redirecionamentos.",
+      "technologies": ["Netlify"],
+      "path": "xcam-redirects/"
+    },
+    {
+      "name": "xcam-status",
+      "type": "frontend",
+      "description": "Página de Status.",
+      "technologies": ["HTML", "CSS"],
+      "path": "xcam-status/"
+    },
+    {
+      "name": "xcam-ads",
+      "type": "unknown",
+      "description": "Módulo relacionado a anúncios.",
+      "path": "xcam-ads/"
+    },
+    {
+      "name": "xcam-scripts",
+      "type": "scripts",
+      "description": "Scripts utilitários.",
+      "path": "xcam-scripts/"
+    }
+  ],
+  "infrastructure": {
+    "firebase": {
+      "config": "firebase.json",
+      "rc": ".firebaserc"
+    }
+  }
+}

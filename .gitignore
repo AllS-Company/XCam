@@ -1,2 +1,11 @@
 # Ignora arquivos de configuração de pasta do Windows
 desktop.ini
+
+# Dependencies
+node_modules/
+
+# Configuration
+xcam-app/config.json
+
+# Logs
+*.log
