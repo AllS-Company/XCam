@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
-  <head>
-    <meta charset="UTF-8">
-    <title>XCam Web App Beta</title>
-     <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>XCam - Transmissões ao Vivo</title>
 
   <!-- ===== FAVICONS ===== -->
@@ -13,55 +11,11 @@
   <link rel="icon" type="image/png" href="https://xcam.gay/src/logo.png">
 
   <!-- ===== FONTES E ESTILOS ===== -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="./style.css">
 
   <!-- ===== TAILWIND CSS (CDN) E CONFIGURAÇÃO DE TEMA ===== -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#FF007F',
-            secondary: '#FFD700',
-            accent: '#FF4500',
-            highlight: '#4169E1',
-            purple: '#800080',
-            dark: '#121212',
-            darker: '#0a0a0a',
-            gray: {
-              100: '#f5f5f5',
-              200: '#e5e5e5',
-              300: '#d4d4d4',
-              400: '#a3a3a3',
-              500: '#737373',
-              600: '#525252',
-              700: '#404040',
-              800: '#262626',
-              900: '#171717',
-            }
-          },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
-        }
-      }
-    }
-  </script><link rel="stylesheet" href="./style.css">
-
-  </head>
-    
-  <body>
-  <html lang="pt-BR">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XCam - Transmissões ao Vivo</title>
-  <!-- Style CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-app/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -81,6 +35,7 @@
       }
     }
   </script>
+
   <meta name="6a97888e-site-verification" content="15989ae96dff82fe33826928ae653613">
   <link rel="manifest" href="https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-beta/manifest.json">
 
@@ -487,30 +442,11 @@
       </p>
     </div>
   </div>
-  <!-- Script JS -->
-  <script src="https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-app/script.js"></script>
+
+  <!-- Scripts -->
+  <script type="module" src="./script.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-beta/ads.js"></script>
-  <script>
-    fetch('https://api.xcam.gay/?key=99090882&list=tags')
-      .then(response => response.json())
-      .then(data => {
-        // Extrai os nomes das tags e limita para 30
-        const tags = data.resultado.map(tag => tag.name).slice(0, 30);
-        // Cria a meta tag keywords
-        const meta = document.createElement('meta');
-        meta.name = 'keywords';
-        meta.content = tags.join(', ');
-        // Insere no head
-        document.head.appendChild(meta);
-      })
-      .catch(err => console.error('Erro ao buscar tags:', err));
-  </script>
+  <script src='https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-beta/sw.js'></script>
 </body>
 
-</html>
-    <script src='https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-beta/sw.js'></script>
-<script src='https://cdn.jsdelivr.net/gh/SamuelPassamani/XCam@main/xcam-beta/ads.js'></script><script type="module" src="./script.js"></script>
-
-  </body>
-  
 </html>
